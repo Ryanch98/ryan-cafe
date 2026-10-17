@@ -290,6 +290,7 @@ const initialState = {
       items: [
         {
           id: 21,
+          image: '/pic/croissant.png',
           name: {
             fa: 'کیک شکلاتی',
             en: 'Chocolate Cake',
@@ -302,6 +303,7 @@ const initialState = {
         },
         {
           id: 22,
+          image: '/pic/croissant.png',
           name: {
             fa: 'کراسان شکلاتی',
             en: 'Chocolate Croissant',
@@ -314,6 +316,7 @@ const initialState = {
         },
         {
           id: 23,
+          image: '/pic/croissant.png',
           name: {
             fa: 'پن شکلاتی',
             en: 'Chocolate Roll',
@@ -326,6 +329,7 @@ const initialState = {
         },
         {
           id: 24,
+          image: '/pic/croissant.png',
           name: {
             fa: 'رول دارچین',
             en: 'Cinnamon Roll',
@@ -338,6 +342,7 @@ const initialState = {
         },
         {
           id: 25,
+          image: '/pic/croissant.png',
           name: {
             fa: 'کوکی کشمشی',
             en: 'Raisin Cookie',
@@ -350,6 +355,7 @@ const initialState = {
         },
         {
           id: 26,
+          image: '/pic/croissant.png',
           name: {
             fa: 'کوکی شکلاتی',
             en: 'Chocolate Cookie',
