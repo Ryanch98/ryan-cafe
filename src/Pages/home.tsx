@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../redux/hooks';
+import { Link } from 'react-router-dom';
 import CoffeeStory from '../Components/coffeeStory/coffeeStory';
 import { translations } from '../redux/translations';
 import SignInModal from '../Components/SignInModal';
@@ -95,6 +96,21 @@ export default function Home() {
 
       {/* Coffee Story Section */}
       <CoffeeStory />
+
+      {/* Editorial guide promotion */}
+      <section dir={language === 'fa' ? 'rtl' : 'ltr'} className="relative overflow-hidden bg-gradient-to-br from-amber-950/70 via-slate-950 to-slate-900 px-5 py-14 text-white sm:px-10 sm:py-20">
+        <div aria-hidden="true" className="absolute -right-10 -top-16 h-64 w-64 rounded-full bg-amber-300/10 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-8 md:grid-cols-[1fr_auto]">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">{language === 'fa' ? 'بیشتر درباره قهوه بدان' : 'BREW YOUR KNOWLEDGE'}</p>
+            <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight sm:text-4xl">{language === 'fa' ? 'قهوه، فراتر از یک فنجان' : 'Coffee is more than a cup'}</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-300 sm:text-base">{language === 'fa' ? 'با فواید احتمالی قهوه، نقش کافئین و چند نکته ساده برای لذت‌بردن متعادل از نوشیدنی محبوبت آشنا شو.' : 'Explore potential benefits, understand caffeine, and find simple tips for enjoying your favourite drink mindfully.'}</p>
+          </div>
+          <Link to="/coffee-guide" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-amber-300 px-6 py-3 text-sm font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-amber-200">
+            {language === 'fa' ? 'مطالعه راهنمای قهوه' : 'Read the coffee guide'} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
 
       {/* Sign In Modal */}
       <SignInModal open={showSignIn} onClose={() => setShowSignIn(false)} />
