@@ -66,9 +66,9 @@ export default function Category() {
 
             return (
               <article key={item.id} className="group flex min-w-0 flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 shadow-lg shadow-black/10 transition duration-300 hover:-translate-y-1 hover:border-amber-300/30 hover:shadow-xl hover:shadow-black/20">
-                <div className="relative aspect-[5/3] overflow-hidden bg-slate-800/80">
+                <div className="relative aspect-[4/3] overflow-hidden bg-slate-800/80 p-3 sm:p-4">
                   {item.image ? (
-                    <img src={item.image} alt={itemName} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <img src={item.image} alt={itemName} loading="lazy" className="h-full w-full rounded-2xl border border-white/10 bg-slate-950/50 object-contain p-2 transition duration-500 group-hover:scale-[1.03]" />
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm text-slate-500">{isRTL ? 'تصویر موجود نیست' : 'Image unavailable'}</div>
                   )}
