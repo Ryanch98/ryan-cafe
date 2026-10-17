@@ -57,9 +57,9 @@ export default function CoffeeAnimation({ reverse, progress = 0, machineImage })
           opacity: pressOpacity,
           rotate: rotate,
           transformOrigin: '4% 40%',
-          scaleX: reverse ? -1 : 1,
+          scaleX: 1,
         }}
-        className={`absolute -top-2 left-[135px] z-20 w-full sm:bottom-32 sm:left-[85px] sm:top-[70px] ${reverse ? 'left-[130px] sm:left-[56px]' : 'left-32 sm:left-12'}`}
+        className={`absolute left-[calc(50%-55px)] top-2 z-20 w-[130px] sm:left-[calc(50%-100px)] sm:top-[40px] sm:w-[200px] ${reverse ? 'scale-x-[-1]' : ''}`}
       >
         <img
           src={machineImage}
@@ -69,14 +69,14 @@ export default function CoffeeAnimation({ reverse, progress = 0, machineImage })
       </motion.div>
 
       <motion.div
-        className={`${reverse ? 'left-[123px] sm:left-[50px] sm:top-[150px]' : 'left-[130px]'} absolute left-[130px] top-[40px] z-10 sm:left-[50px] sm:top-[135px] sm:w-auto`}
+        className="absolute left-[calc(50%-26px)] top-[90px] z-10 sm:left-[calc(50%-25px)] sm:top-[145px]"
         style={{
           opacity: pressOpacity,
           transformOrigin: 'top center',
           scaleY: getStreamScale(rotate),
         }}
       >
-        <svg className="h-[80px] w-[40px] sm:h-[120px] sm:w-[50px]" viewBox="0 0 50 260">
+        <svg className="h-[80px] w-[40px] sm:h-[120px] sm:w-[50px]" viewBox="0 0 50 260" preserveAspectRatio="none">
           <defs>
             {/* Coffee Body */}
             <linearGradient id="coffeeBody" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -150,7 +150,7 @@ export default function CoffeeAnimation({ reverse, progress = 0, machineImage })
       {/* Coffee Stream */}
 
       {/* Cup */}
-      <div className={`absolute sm:bottom-12 sm:top-48`}>
+      <div className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[245px]">
         <div
           className={`relative w-[100px] transition-all duration-700 ease-out sm:w-[200px] ${
             progress > 0 && progress < 0.99

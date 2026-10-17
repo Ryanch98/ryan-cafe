@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../redux/hooks';
+import { Link } from 'react-router-dom';
 import CoffeeStory from '../Components/coffeeStory/coffeeStory';
 import { translations } from '../redux/translations';
 import SignInModal from '../Components/SignInModal';
@@ -23,7 +24,6 @@ export default function Home() {
 
   // State management
   const [showSignIn, setShowSignIn] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [commentIndex, setCommentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_SELECTED_CATEGORY);
@@ -41,9 +41,6 @@ export default function Home() {
   }, []);
 
   const handleNextSlide = useCallback(() => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === HOME_CAROUSEL_IMAGES.length - 1 ? 0 : prevIndex + 1,
-    );
     setCommentIndex((prevIndex) => (prevIndex === 3 ? 0 : prevIndex + 1));
   }, []);
 
@@ -62,16 +59,9 @@ export default function Home() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Background Hero Section */}
-        <div className="absolute inset-0 hidden sm:block">
-          <img
-            src={HOME_CAROUSEL_IMAGES[currentImageIndex]}
-            alt="Cafe background"
-            className="h-full w-full object-cover transition-opacity duration-500"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-        <div className="absolute inset-0 block bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 sm:hidden" />
+        {/* Clean, dark homepage background — no background photo */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-950 to-black" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-amber-400/[0.06] blur-3xl" />
 
         {/* Main Content */}
         <div className="relative z-10 flex min-h-screen w-full flex-col justify-between gap-2 md:gap-4">
@@ -95,6 +85,21 @@ export default function Home() {
 
       {/* Coffee Story Section */}
       <CoffeeStory />
+
+      {/* Editorial guide promotion */}
+      <section dir={language === 'fa' ? 'rtl' : 'ltr'} className="relative overflow-hidden bg-gradient-to-br from-amber-950/70 via-slate-950 to-slate-900 px-5 py-14 text-white sm:px-10 sm:py-20">
+        <div aria-hidden="true" className="absolute -right-10 -top-16 h-64 w-64 rounded-full bg-amber-300/10 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-8 md:grid-cols-[1fr_auto]">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">{language === 'fa' ? 'بیشتر درباره قهوه بدان' : 'BREW YOUR KNOWLEDGE'}</p>
+            <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight sm:text-4xl">{language === 'fa' ? 'قهوه، فراتر از یک فنجان' : 'Coffee is more than a cup'}</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-300 sm:text-base">{language === 'fa' ? 'با فواید احتمالی قهوه، نقش کافئین و چند نکته ساده برای لذت‌بردن متعادل از نوشیدنی محبوبت آشنا شو.' : 'Explore potential benefits, understand caffeine, and find simple tips for enjoying your favourite drink mindfully.'}</p>
+          </div>
+          <Link to="/coffee-guide" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-amber-300 px-6 py-3 text-sm font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-amber-200">
+            {language === 'fa' ? 'مطالعه راهنمای قهوه' : 'Read the coffee guide'} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
 
       {/* Sign In Modal */}
       <SignInModal open={showSignIn} onClose={() => setShowSignIn(false)} />
