@@ -57,13 +57,13 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
           return (
             <SwiperSlide key={item.id}>
               <article className="group mx-auto flex h-full max-w-[320px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/65 text-white shadow-xl shadow-black/20 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-amber-300/30 hover:shadow-2xl hover:shadow-black/30">
-                <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-white/[0.06] to-slate-900 p-3 sm:p-4">
                   {item.image ? (
                     <img
                       src={item.image}
                       alt={name}
                       loading="lazy"
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      className="h-full w-full rounded-2xl border border-white/10 bg-slate-950/40 object-contain p-2 transition duration-500 group-hover:scale-[1.03]"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm text-white/40">
