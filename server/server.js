@@ -4,21 +4,18 @@ import dotenv from 'dotenv';
 import OpenAI from 'openai';
 
 dotenv.config();
-console.log(
-  'KEY CHECK:',
-  process.env.GROQ_API_KEY.slice(0, 8),
-  '...',
-  process.env.GROQ_API_KEY.slice(-8),
-);
+
 const app = express();
-
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '32kb' }));
 
-const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: 'https://api.groq.com/openai/v1',
-});
+const apiKey = process.env.GROQ_API_KEY;
+const client = apiKey
+  ? new OpenAI({
+      apiKey,
+      baseURL: 'https://api.groq.com/openai/v1',
+    })
+  : null;
 
 const SYSTEM_PROMPT = `
 You are Modern Cafe AI, a coffee expert.
@@ -42,8 +39,8 @@ If the user asks unrelated questions, politely say you only answer coffee-relate
 const PORT = process.env.PORT || 3001;
 const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 
-if (!process.env.GROQ_API_KEY) {
-  console.warn('WARNING: GROQ_API_KEY is not set.');
+if (!apiKey) {
+  console.warn('WARNING: GROQ_API_KEY is not set. The coffee assistant will use fallback replies.');
 }
 
 function getFallbackReply(message) {
@@ -61,46 +58,58 @@ function getFallbackReply(message) {
 }
 
 app.post('/chat', async (req, res) => {
+  const rawMessage = req.body?.message;
+  if (typeof rawMessage !== 'string' || !rawMessage.trim()) {
+    return res.status(400).json({ answer: 'Please enter a coffee-related question.' });
+  }
+
+  if (rawMessage.length > 4000) {
+    return res.status(413).json({ answer: 'Please keep your message under 4,000 characters.' });
+  }
+
   try {
-    const { message = '', history = [] } = req.body || {};
+    const rawHistory = Array.isArray(req.body?.history) ? req.body.history : [];
+    // Only accept user/assistant turns from the client; never allow client-supplied system instructions.
+    const safeHistory = rawHistory
+      .filter(
+        (item) =>
+          item &&
+          typeof item === 'object' &&
+          (item.role === 'user' || item.role === 'assistant') &&
+          typeof item.content === 'string',
+      )
+      .slice(-20)
+      .map((item) => ({ role: item.role, content: item.content.slice(0, 4000) }));
 
-    const safeHistory = Array.isArray(history)
-      ? history.filter((item) => item && typeof item === 'object' && item.role && item.content)
-      : [];
-
-    const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...safeHistory,
-      { role: 'user', content: message },
-    ];
-
-    if (!process.env.GROQ_API_KEY) {
-      return res.json({ answer: getFallbackReply(message) });
+    if (!client) {
+      return res.json({ answer: getFallbackReply(rawMessage) });
     }
 
     const response = await client.chat.completions.create({
       model: GROQ_MODEL,
-      messages,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...safeHistory,
+        { role: 'user', content: rawMessage.trim() },
+      ],
       temperature: 0.4,
       max_tokens: 300,
     });
 
-    const answer = response.choices?.[0]?.message?.content || getFallbackReply(message);
-    res.json({ answer });
+    const answer = response.choices?.[0]?.message?.content || getFallbackReply(rawMessage);
+    return res.json({ answer });
   } catch (err) {
     const status = err?.status || err?.response?.status || 500;
-    const errorMessage = err?.error?.message || err?.message || 'Unknown error';
-
-    console.error('GROQ ERROR:', { status, errorMessage });
+    console.error('GROQ request failed:', { status });
 
     if (status === 401 || status === 403 || status === 429) {
       return res.status(502).json({
-        answer: `The coffee assistant is currently unavailable because the AI service rejected the request (${errorMessage}). Please check your Groq API key or try again later.`,
+        answer: 'The coffee assistant is temporarily unavailable. Please try again later.',
       });
     }
 
-    res.status(500).json({
-      answer: getFallbackReply(req.body?.message || ''),
+    return res.status(500).json({
+      answer: getFallbackReply(rawMessage),
     });
   }
 });
