@@ -41,7 +41,7 @@ export default function About() {
             </div>
           </div>
           <div className="relative">
-            <img src="/pic/about-hero.jpg" alt={isRTL ? 'فضای کافه' : 'Cafe atmosphere'} className="aspect-[4/3] w-full rounded-3xl border border-white/10 bg-slate-800 object-cover shadow-2xl" />
+            <img src="/pic/pic1.jpg" alt={isRTL ? 'فضای کافه' : 'Cafe atmosphere'} className="aspect-[4/3] w-full rounded-3xl border border-white/10 bg-slate-800 object-cover shadow-2xl" />
             <div className="absolute -bottom-3 rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-3 shadow-xl backdrop-blur ltr:left-3 rtl:right-3 sm:ltr:left-6 sm:rtl:right-6">
               <p className="text-sm font-semibold text-amber-200">{isRTL ? 'یک فنجان، یک مکث' : 'One cup. A little pause.'}</p>
               <p className="mt-1 text-xs text-slate-400">{isRTL ? 'هر روز، با دقت آماده می‌شود' : 'Thoughtfully made, every day'}</p>
