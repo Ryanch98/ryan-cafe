@@ -24,7 +24,6 @@ export default function Home() {
 
   // State management
   const [showSignIn, setShowSignIn] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [commentIndex, setCommentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_SELECTED_CATEGORY);
@@ -42,9 +41,6 @@ export default function Home() {
   }, []);
 
   const handleNextSlide = useCallback(() => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === HOME_CAROUSEL_IMAGES.length - 1 ? 0 : prevIndex + 1,
-    );
     setCommentIndex((prevIndex) => (prevIndex === 3 ? 0 : prevIndex + 1));
   }, []);
 
@@ -63,16 +59,9 @@ export default function Home() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Background Hero Section */}
-        <div className="absolute inset-0 hidden sm:block">
-          <img
-            src={HOME_CAROUSEL_IMAGES[currentImageIndex]}
-            alt="Cafe background"
-            className="h-full w-full object-cover transition-opacity duration-500"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-        <div className="absolute inset-0 block bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 sm:hidden" />
+        {/* Clean, dark homepage background — no background photo */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-950 to-black" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-amber-400/[0.06] blur-3xl" />
 
         {/* Main Content */}
         <div className="relative z-10 flex min-h-screen w-full flex-col justify-between gap-2 md:gap-4">
