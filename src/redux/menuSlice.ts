@@ -290,7 +290,7 @@ const initialState = {
       items: [
         {
           id: 21,
-          image: '/pic/croissant.png',
+          image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85',
           name: {
             fa: 'کیک شکلاتی',
             en: 'Chocolate Cake',
@@ -303,7 +303,7 @@ const initialState = {
         },
         {
           id: 22,
-          image: '/pic/croissant.png',
+          image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=85',
           name: {
             fa: 'کراسان شکلاتی',
             en: 'Chocolate Croissant',
@@ -316,7 +316,7 @@ const initialState = {
         },
         {
           id: 23,
-          image: '/pic/croissant.png',
+          image: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=900&q=85',
           name: {
             fa: 'پن شکلاتی',
             en: 'Chocolate Roll',
@@ -329,7 +329,7 @@ const initialState = {
         },
         {
           id: 24,
-          image: '/pic/croissant.png',
+          image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=85',
           name: {
             fa: 'رول دارچین',
             en: 'Cinnamon Roll',
@@ -342,7 +342,7 @@ const initialState = {
         },
         {
           id: 25,
-          image: '/pic/croissant.png',
+          image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=900&q=85',
           name: {
             fa: 'کوکی کشمشی',
             en: 'Raisin Cookie',
@@ -355,7 +355,7 @@ const initialState = {
         },
         {
           id: 26,
-          image: '/pic/croissant.png',
+          image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=900&q=85',
           name: {
             fa: 'کوکی شکلاتی',
             en: 'Chocolate Cookie',
