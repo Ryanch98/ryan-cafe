@@ -1,7 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
-import MenuCastum from './menu';
 import Footer from './footer';
 import LanguageSwitcher from './LanguageSwitcher';
 import SkeletonLoader from './SkeletonLoader';
@@ -29,22 +28,13 @@ export default function Layout() {
     return () => window.clearTimeout(timer);
   }, [location.pathname]);
 
-  const navClass =
-    'rounded-full px-4 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white';
+  const navClass = 'rounded-full px-4 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white';
 
   return (
-    <div
-      dir={isRTL ? 'rtl' : 'ltr'}
-      className="flex min-h-screen w-full flex-col overflow-x-clip bg-slate-950 text-white"
-      style={{
-        paddingTop: 'env(safe-area-inset-top)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
-      }}
-    >
+    <div dir={isRTL ? 'rtl' : 'ltr'} className="flex min-h-screen w-full flex-col overflow-x-clip bg-slate-950 text-white" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <a href="#main-content" className="sr-only z-[100] rounded-full bg-amber-300 px-4 py-2 text-slate-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
         {isRTL ? 'رفتن به محتوای اصلی' : 'Skip to main content'}
       </a>
-
       <header className="sticky top-0 z-30 px-3 pt-3 sm:px-6 sm:pt-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2 shadow-xl shadow-black/10 backdrop-blur-2xl sm:rounded-full sm:px-5">
           <Link to="/" aria-label="Modern Cafe home" className="flex min-w-0 shrink items-center gap-2.5">
@@ -54,7 +44,6 @@ export default function Layout() {
               <span className="block text-xs text-slate-400">{isRTL ? 'قهوه، خوراکی و لحظه‌های خوب' : 'Coffee, treats & good moments'}</span>
             </span>
           </Link>
-
           <nav aria-label={isRTL ? 'ناوبری اصلی' : 'Main navigation'} className="hidden items-center gap-1 md:flex">
             <Link to="/" className={navClass}>{isRTL ? 'خانه' : 'Home'}</Link>
             <Link to="/category/drinks" className={navClass}>{isRTL ? 'نوشیدنی‌ها' : 'Drinks'}</Link>
@@ -62,7 +51,6 @@ export default function Layout() {
             <Link to="/category/foods" className={navClass}>{isRTL ? 'غذاها' : 'Food'}</Link>
             <Link to="/about" className={navClass}>{isRTL ? 'درباره ما' : 'About'}</Link>
           </nav>
-
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
             <Link to="/cart" className="relative inline-flex h-10 items-center gap-2 rounded-full bg-amber-300 px-3 text-sm font-bold text-slate-950 transition hover:bg-amber-200 sm:px-4" aria-label={isRTL ? `سبد خرید، ${cartQuantity} کالا` : `Shopping cart, ${cartQuantity} items`}>
@@ -75,7 +63,6 @@ export default function Layout() {
             </button>
           </div>
         </div>
-
         {mobileMenuOpen && (
           <nav aria-label={isRTL ? 'منوی موبایل' : 'Mobile navigation'} className="mx-auto mt-2 grid max-w-7xl grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-slate-950/95 p-3 shadow-2xl backdrop-blur-2xl md:hidden">
             {[
@@ -92,19 +79,14 @@ export default function Layout() {
           </nav>
         )}
       </header>
-
-      {loading ? (
-        <div className="flex-1"><SkeletonLoader isHome={isHome} /></div>
-      ) : (
+      {loading ? <div className="flex-1"><SkeletonLoader isHome={isHome} /></div> : (
         <main id="main-content" className={`w-full flex-1 ${isHome ? '' : 'mx-auto max-w-7xl px-3 pb-12 pt-5 sm:px-6 sm:pt-8 lg:px-8'}`}>
           <Outlet />
         </main>
       )}
-
       {!loading && <Footer />}
       <CoffeeAssistantButton onClick={() => setShowAssistant(true)} language={language} />
       <CoffeeAssistant isOpen={showAssistant} onClose={() => setShowAssistant(false)} language={language} />
-      <div className="hidden"><MenuCastum /></div>
     </div>
   );
 }
