@@ -29,8 +29,8 @@ export default function HomeHeader({ signInText, aboutUsText, onSignIn }: HomeHe
   ];
 
   return (
-    <header dir={isRTL ? 'rtl' : 'ltr'} className="sticky top-0 z-40 px-3 pt-3 sm:px-6 sm:pt-5 lg:px-10">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/[0.09] bg-slate-950/85 px-3 py-2.5 shadow-lg shadow-black/20 backdrop-blur-2xl sm:rounded-full sm:px-5 lg:px-6">
+    <header dir={isRTL ? 'rtl' : 'ltr'} className="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-slate-950/90 shadow-lg shadow-black/10 backdrop-blur-2xl">
+      <div className="mx-auto flex min-h-[76px] max-w-[1440px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-10">
         <Link to="/" aria-label="Modern Cafe home" className="group flex min-w-0 shrink-0 items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
           <span className="flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-amber-300/[0.08] p-1.5 transition group-hover:border-amber-200/40 sm:h-12 sm:w-12">
             <img className="h-full w-full object-contain" src="/pic/logo.png" alt="" />
@@ -65,7 +65,7 @@ export default function HomeHeader({ signInText, aboutUsText, onSignIn }: HomeHe
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white transition hover:border-amber-200/40 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:h-11 sm:w-11"
           >
             <ShoppingBagIcon className="h-5 w-5" />
-            {cartQuantity > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-300 px-1 text-[10px] font-black text-slate-950">{cartQuantity > 99 ? '99+' : cartQuantity}</span>}
+            {cartQuantity > 0 && <span className={`absolute ${isRTL ? '-left-1' : '-right-1'} -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-300 px-1 text-[10px] font-black text-slate-950`}>{cartQuantity > 99 ? '99+' : cartQuantity}</span>}
           </Link>
 
           <div className="sm:hidden"><LanguageSwitcher /></div>
