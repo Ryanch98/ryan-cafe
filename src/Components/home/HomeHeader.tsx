@@ -62,7 +62,7 @@ export default function HomeHeader({ signInText, aboutUsText, onSignIn }: HomeHe
           </div>
           <Menu as="div" className="relative">
             <MenuButton
-              aria-label="Open navigation menu"
+              aria-label={isRTL ? "باز کردن منو" : "Open navigation menu"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
             >
               {({ open }) => open ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
@@ -72,13 +72,16 @@ export default function HomeHeader({ signInText, aboutUsText, onSignIn }: HomeHe
                 {({ close }) => <Link to="/" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "خانه" : "Home"}</Link>}
               </MenuItem>
               <MenuItem>
-                {({ close }) => <Link to="/category/نوشیدنی ها" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "نوشیدنی‌ها" : "Drinks"}</Link>}
+                {({ close }) => <Link to="/category/drinks" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "نوشیدنی‌ها" : "Drinks"}</Link>}
               </MenuItem>
               <MenuItem>
-                {({ close }) => <Link to="/category/کیک" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "کیک‌ها" : "Cakes"}</Link>}
+                {({ close }) => <Link to="/category/cakes" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "کیک‌ها" : "Cakes"}</Link>}
               </MenuItem>
               <MenuItem>
-                {({ close }) => <Link to="/category/غذا" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "غذاها" : "Foods"}</Link>}
+                {({ close }) => <Link to="/category/foods" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "غذاها" : "Foods"}</Link>}
+              </MenuItem>
+              <MenuItem>
+                {({ close }) => <Link to="/coffee-guide" onClick={close} className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10">{isRTL ? "راهنمای قهوه" : "Coffee guide"}</Link>}
               </MenuItem>
               <MenuItem>
                 {({ close }) => <button type="button" onClick={() => { close(); navigate('/about'); }} className="block w-full rounded-xl px-3 py-2.5 text-left transition hover:bg-white/10">{aboutUsText}</button>}
@@ -87,7 +90,7 @@ export default function HomeHeader({ signInText, aboutUsText, onSignIn }: HomeHe
                 {({ close }) => <button type="button" onClick={() => { close(); onSignIn(); }} className="block w-full rounded-xl px-3 py-2.5 text-left transition hover:bg-white/10">{signInText}</button>}
               </MenuItem>
               <MenuItem>
-                {({ close }) => <Link to="/cart" onClick={close} className="mt-1 block rounded-xl bg-amber-400 px-3 py-2.5 font-semibold text-slate-950 transition hover:bg-amber-300">{isRTL ? "سبد خرید" : "Cart"}</Link>}
+                {({ close }) => <Link to="/cart" onClick={close} className="mt-1 block rounded-xl bg-amber-400 px-3 py-2.5 font-semibold text-slate-950 transition hover:bg-amber-300">{isRTL ? "سبد خرید" : "Cart"}{cartQuantity > 0 ? ` (${cartQuantity})` : ""}</Link>}
               </MenuItem>
             </MenuItems>
           </Menu>
