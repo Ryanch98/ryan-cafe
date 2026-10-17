@@ -35,7 +35,7 @@ export default function Layout() {
       <a href="#main-content" className="sr-only z-[100] rounded-full bg-amber-300 px-4 py-2 text-slate-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
         {isRTL ? 'رفتن به محتوای اصلی' : 'Skip to main content'}
       </a>
-      <header className="sticky top-0 z-30 px-3 pt-3 sm:px-6 sm:pt-4">
+      {!isHome && <header className="sticky top-0 z-30 px-3 pt-3 sm:px-6 sm:pt-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2 shadow-xl shadow-black/10 backdrop-blur-2xl sm:rounded-full sm:px-5">
           <Link to="/" aria-label="Modern Cafe home" className="flex min-w-0 shrink items-center gap-2.5">
             <img src="/pic/logo.png" alt="" className="h-10 w-10 rounded-full border border-white/10 object-contain sm:h-12 sm:w-12" />
@@ -78,7 +78,7 @@ export default function Layout() {
             ))}
           </nav>
         )}
-      </header>
+      </header>}
       {loading ? <div className="flex-1"><SkeletonLoader isHome={isHome} /></div> : (
         <main id="main-content" className={`w-full flex-1 ${isHome ? '' : 'mx-auto max-w-7xl px-3 pb-12 pt-5 sm:px-6 sm:pt-8 lg:px-8'}`}>
           <Outlet />
