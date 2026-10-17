@@ -50,6 +50,7 @@ export default function Layout() {
             <Link to="/category/cakes" className={navClass}>{isRTL ? 'کیک‌ها' : 'Cakes'}</Link>
             <Link to="/category/foods" className={navClass}>{isRTL ? 'غذاها' : 'Food'}</Link>
             <Link to="/about" className={navClass}>{isRTL ? 'درباره ما' : 'About'}</Link>
+            <Link to="/coffee-guide" className={navClass}>{isRTL ? 'فواید قهوه' : 'Coffee guide'}</Link>
           </nav>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
@@ -71,6 +72,7 @@ export default function Layout() {
               { to: '/category/cakes', en: 'Cakes', fa: 'کیک‌ها' },
               { to: '/category/foods', en: 'Food', fa: 'غذاها' },
               { to: '/about', en: 'About us', fa: 'درباره ما' },
+              { to: '/coffee-guide', en: 'Coffee guide', fa: 'فواید قهوه' },
             ].map((item) => (
               <Link key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)} className="rounded-xl border border-white/5 px-4 py-3 text-sm text-white/85 transition hover:border-amber-300/30 hover:bg-white/5">
                 {isRTL ? item.fa : item.en}
