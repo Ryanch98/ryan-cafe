@@ -150,7 +150,7 @@ export default function CoffeeAnimation({ reverse, progress = 0, machineImage })
       {/* Coffee Stream */}
 
       {/* Cup */}
-      <div className={`absolute sm:bottom-12 sm:top-48`}>
+      <div className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[245px]">
         <div
           className={`relative w-[100px] transition-all duration-700 ease-out sm:w-[200px] ${
             progress > 0 && progress < 0.99
