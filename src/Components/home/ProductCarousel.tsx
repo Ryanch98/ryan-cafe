@@ -3,6 +3,7 @@ import { EffectCoverflow } from 'swiper/modules';
 import type { MenuItemContent, Language } from '../../constants/types';
 import { SWIPER_CONFIG, SWIPER_COVERFLOW_SETTINGS } from '../../constants/homeConstants';
 import { addToCart } from '../../redux/cartSlice';
+import formatPrice from '../../utils/formatPrice';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -63,7 +64,6 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                       alt={name}
                       loading="lazy"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      style={{ transform: undefined }}
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm text-white/40">
@@ -81,7 +81,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                   <div className="flex items-start justify-between gap-3">
                     <h2 className="text-base font-semibold leading-6 text-white sm:text-lg">{name}</h2>
                     <span className="shrink-0 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs font-semibold text-amber-200">
-                      {item.price.toLocaleString(language === 'fa' ? 'fa-IR' : 'en-US')}
+                      {formatPrice(item.price, language)}
                     </span>
                   </div>
                   {description && (
