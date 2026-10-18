@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useId } from 'react';
 
 interface CoffeeAnimationProps {
   reverse: boolean;
@@ -11,6 +12,7 @@ export default function CoffeeAnimation({
   progress = 0,
   machineImage,
 }: CoffeeAnimationProps) {
+  const gradientId = `espresso-stream-${useId().replace(/:/g, '')}`;
   const amount = Math.min(1, Math.max(0, progress));
   // Leave a short intro and outro so the pour feels intentional.
   const pourProgress = Math.min(1, Math.max(0, (amount - 0.12) / 0.68));
@@ -59,7 +61,7 @@ export default function CoffeeAnimation({
           aria-hidden="true"
         >
           <defs>
-            <linearGradient id="espresso-stream-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#281006" />
               <stop offset="28%" stopColor="#6b3518" />
               <stop offset="52%" stopColor="#bd7941" />
@@ -69,7 +71,7 @@ export default function CoffeeAnimation({
           </defs>
           <motion.path
             d="M21 0 C16 38 29 65 22 98 C16 132 29 159 22 194 C19 218 25 242 23 260 L31 260 C34 226 27 207 32 180 C39 143 27 119 32 88 C38 53 25 28 30 0 Z"
-            fill="url(#espresso-stream-gradient)"
+            fill={`url(#${gradientId})`}
             animate={{ x: [0, 1.5, -1, 0] }}
             transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
           />
