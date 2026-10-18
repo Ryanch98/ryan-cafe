@@ -40,8 +40,8 @@ export default function CategorySelector({
       <style>{`
         .menu-orbit-root .menu-orbit-stage {
           position: relative;
-          width: min(100%, 340px);
-          height: 244px;
+          width: min(100%, 380px);
+          height: 264px;
           margin: 0 auto;
           isolation: isolate;
         }
@@ -49,9 +49,9 @@ export default function CategorySelector({
           position: absolute;
           z-index: 5;
           left: 50%;
-          top: 126px;
-          width: 112px;
-          height: 112px;
+          top: 136px;
+          width: 120px;
+          height: 120px;
           transform: translateX(-50%);
           border-radius: 9999px;
           display: flex;
@@ -75,8 +75,8 @@ export default function CategorySelector({
           position: absolute;
           z-index: 4;
           display: flex;
-          width: 88px;
-          height: 88px;
+          width: 102px;
+          height: 102px;
           flex-direction: column;
           align-items: center;
           justify-content: center;
@@ -91,9 +91,9 @@ export default function CategorySelector({
           transform: translate(0, 12px) scale(.48);
           transition: opacity 280ms ease, transform 440ms cubic-bezier(.2,.85,.2,1), border-color 250ms ease, background 250ms ease;
         }
-        .menu-orbit-root .menu-orbit-drinks { left: 5px; top: 91px; }
-        .menu-orbit-root .menu-orbit-foods { left: 50%; top: 3px; }
-        .menu-orbit-root .menu-orbit-cakes { right: 5px; top: 91px; }
+        .menu-orbit-root .menu-orbit-drinks { left: 2px; top: 96px; }
+        .menu-orbit-root .menu-orbit-foods { left: 50%; top: 0; }
+        .menu-orbit-root .menu-orbit-cakes { right: 2px; top: 96px; }
         .menu-orbit-root.menu-orbit-open .menu-orbit-category,
         .menu-orbit-root:focus-within .menu-orbit-category {
           opacity: 1;
@@ -138,12 +138,14 @@ export default function CategorySelector({
         .menu-orbit-root:focus-within .menu-orbit-goo span:nth-child(2) { transform: translateY(-11px) scale(.75); }
         .menu-orbit-root.menu-orbit-open .menu-orbit-goo span:nth-child(3),
         .menu-orbit-root:focus-within .menu-orbit-goo span:nth-child(3) { transform: translate(22px, 9px) scale(.7); }
-        .menu-orbit-root .menu-orbit-category img { width: 31px; height: 31px; object-fit: contain; }
-        .menu-orbit-root .menu-orbit-category span { max-width: 76px; padding: 0 3px; font-size: 11px; font-weight: 700; line-height: 1.15; text-align: center; }
+        .menu-orbit-root .menu-orbit-category img { width: 40px; height: 40px; object-fit: contain; }
+        .menu-orbit-root .menu-orbit-category span { max-width: 90px; padding: 0 3px; font-size: 13px; font-weight: 700; line-height: 1.15; text-align: center; }
         @media (max-width: 380px) {
           .menu-orbit-root .menu-orbit-stage { transform: scale(.92); transform-origin: top center; margin-bottom: -19px; }
-          .menu-orbit-root .menu-orbit-main { width: 104px; height: 104px; }
-          .menu-orbit-root .menu-orbit-category { width: 82px; height: 82px; }
+          .menu-orbit-root .menu-orbit-main { width: 108px; height: 108px; }
+          .menu-orbit-root .menu-orbit-category { width: 88px; height: 88px; }
+          .menu-orbit-root .menu-orbit-category img { width: 34px; height: 34px; }
+          .menu-orbit-root .menu-orbit-category span { font-size: 11px; }
           .menu-orbit-root .menu-orbit-drinks { left: 2px; }
           .menu-orbit-root .menu-orbit-cakes { right: 2px; }
         }
