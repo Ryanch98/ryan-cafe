@@ -132,12 +132,12 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
         .home-ring-card { transform: perspective(900px) rotateX(0deg); transform-origin: 50% 0%; transition: transform 320ms ease, border-color 320ms ease; }
-        .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible, .home-ring-card:focus-within { transform: perspective(900px) rotateX(16deg) translateY(5px); }
+        .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible { transform: perspective(900px) rotateX(16deg) translateY(5px); }
         .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel:not([data-pinned="true"]) { filter: blur(5px); opacity: .22; transition: filter 300ms ease, opacity 300ms ease; }
         .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel[data-pinned="true"] { z-index: 10; }
         .home-ring-pin-label { min-height: 58px; }
         .home-ring-pin { position: absolute; z-index: 5; left: 50%; top: -118px; width: min(280px, 90%); transform: translate(-50%, 12px); opacity: 0; pointer-events: none; transition: opacity 260ms ease, transform 320ms ease; }
-        .home-ring-panel[data-pinned="true"] .home-ring-pin, .home-ring-panel:focus-within .home-ring-pin { opacity: 1; transform: translate(-50%, 0); }
+        .home-ring-panel[data-pinned="true"] .home-ring-pin, .home-ring-panel:has(.home-ring-card:focus-visible) .home-ring-pin { opacity: 1; transform: translate(-50%, 0); }
         .home-ring-pin-label { position: relative; margin: 0 auto; max-width: 100%; border: 1px solid rgba(252,211,77,.32); border-radius: 14px; background: rgba(2,6,23,.96); padding: 10px 13px; color: rgba(255,255,255,.9); text-align: center; font-size: 12px; line-height: 1.55; box-shadow: 0 0 24px rgba(252,211,77,.12); }
         .home-ring-pin-stem { display: block; width: 2px; height: 28px; margin: 0 auto; background: linear-gradient(to bottom, rgba(252,211,77,.9), rgba(252,211,77,.35)); }
         .home-ring-pin-dot { display: block; width: 9px; height: 9px; margin: 0 auto; border-radius: 999px; background: #fcd34d; box-shadow: 0 0 0 4px rgba(252,211,77,.12), 0 0 18px rgba(252,211,77,.8); }
