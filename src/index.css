@@ -92,8 +92,22 @@ a {
 }
 
 button {
+  min-height: var(--control-height);
   line-height: 1.25;
   font-weight: 600;
+}
+
+/* Keep icon-only controls square while giving text actions a consistent tap target. */
+button[class*='h-'][class*='w-'][class*='items-center'][class*='justify-center'] {
+  min-height: 0;
+}
+
+button[class*='h-10'][class*='w-10'] {
+  min-height: 2.5rem;
+}
+
+button[class*='h-9'][class*='w-9'] {
+  min-height: 2.25rem;
 }
 
 input,
