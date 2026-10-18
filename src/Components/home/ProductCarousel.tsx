@@ -1,13 +1,10 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow } from 'swiper/modules';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import type { MenuItemContent, Language } from '../../constants/types';
-import { SWIPER_CONFIG, SWIPER_COVERFLOW_SETTINGS } from '../../constants/homeConstants';
 import { addToCart } from '../../redux/cartSlice';
 import formatPrice from '../../utils/formatPrice';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { ShoppingBagIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ShoppingBagIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface ProductCarouselProps {
   items: MenuItemContent[];
@@ -15,6 +12,7 @@ interface ProductCarouselProps {
 }
 
 export default function ProductCarousel({ items, language }: ProductCarouselProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
   const cartQuantities = useAppSelector((state) =>
     state.cart.items.reduce<Record<string, number>>((acc, ci) => {
       acc[String(ci.id)] = ci.quantity;
@@ -22,96 +20,172 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
     }, {}),
   );
   const dispatch = useAppDispatch();
+  const isRtl = language === 'fa';
+  const activeItem = items[activeIndex];
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [items]);
+
+  const step = useCallback((direction: number) => {
+    setActiveIndex((current) => (current + direction + items.length) % items.length);
+  }, [items.length]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      step(isRtl ? -1 : 1);
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      step(isRtl ? 1 : -1);
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      setActiveIndex(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      setActiveIndex(items.length - 1);
+    }
+  };
+
+  const angle = items.length ? 360 / items.length : 0;
+  const radius = useMemo(() => {
+    if (items.length < 2) return 0;
+    const cardWidth = 250;
+    return Math.max(185, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length))));
+  }, [items.length]);
 
   if (!items.length) {
     return (
       <div className="mx-auto flex min-h-48 w-full max-w-xl items-center justify-center px-6 text-center text-sm text-white/70">
-        {language === 'fa' ? 'در این دسته هنوز محصولی وجود ندارد.' : 'No products are available in this category yet.'}
+        {isRtl ? 'در این دسته هنوز محصولی وجود ندارد.' : 'No products are available in this category yet.'}
       </div>
     );
   }
 
   return (
-    <section aria-label={language === 'fa' ? 'محصولات منو' : 'Menu products'} className="w-full pt-3 sm:pt-5">
-      <Swiper
-        {...SWIPER_CONFIG}
-        modules={[EffectCoverflow]}
-        coverflowEffect={SWIPER_COVERFLOW_SETTINGS}
-        breakpoints={{
-          0: { slidesPerView: 1.25, spaceBetween: 14 },
-          480: { slidesPerView: 1.8, spaceBetween: 18 },
-          768: { slidesPerView: 2.3, spaceBetween: 22 },
-          1024: { slidesPerView: 3, spaceBetween: 24 },
-        }}
-        style={{ padding: '12px 24px 24px' }}
-        className="w-full overflow-visible"
-      >
-        {items.map((item) => {
-          const quantity = cartQuantities[String(item.id)] ?? 0;
-          const name = item.name[language] || item.name.en;
-          const description =
-            typeof item.description === 'object'
-              ? item.description[language] || item.description.en
-              : item.description;
+    <section
+      aria-label={isRtl ? 'محصولات منو' : 'Menu products'}
+      aria-roledescription={isRtl ? 'چرخ‌وفلک سه‌بعدی' : '3D carousel'}
+      className="home-ring-carousel w-full px-3 pt-3 sm:px-5 sm:pt-5"
+      dir={isRtl ? 'rtl' : 'ltr'}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
+      <style>{`
+        .home-ring-stage { perspective: 1200px; perspective-origin: 50% 42%; }
+        .home-ring { position: relative; width: 250px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
+        .home-ring-panel { position: absolute; inset: 0; width: 250px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .home-ring-carousel:focus-visible { outline: 2px solid #fcd34d; outline-offset: 5px; border-radius: 1rem; }
+        @media (prefers-reduced-motion: reduce) {
+          .home-ring { transform: none !important; transition: none !important; }
+          .home-ring-panel { transform: none !important; opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
+          .home-ring-panel[data-active="true"] { opacity: 1; pointer-events: auto; }
+          .home-ring-card, .home-ring-card * { transition: none !important; animation: none !important; }
+        }
+      `}</style>
 
-          return (
-            <SwiperSlide key={item.id}>
-              <article className="group mx-auto flex h-full max-w-[320px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/65 text-white shadow-xl shadow-black/20 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-amber-300/30 hover:shadow-2xl hover:shadow-black/30">
-                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-white/[0.06] to-slate-900 p-3 sm:p-4">
-                  {item.image ? (
-                    <img
-                      src={item.image}
-                      alt={name}
-                      loading="lazy"
-                      className="h-full w-full rounded-2xl border border-white/10 bg-slate-950/40 object-contain p-2 transition duration-500 group-hover:scale-[1.03]"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-sm text-white/40">
-                      {language === 'fa' ? 'تصویری موجود نیست' : 'No image available'}
-                    </div>
-                  )}
-                  {quantity > 0 && (
-                    <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-amber-300 px-3 py-1 text-xs font-bold text-slate-950 shadow-lg">
-                      <CheckIcon className="h-3.5 w-3.5" />
-                      {quantity}
-                    </span>
-                  )}
-                </div>
-                <div className={`flex flex-1 flex-col p-4 sm:p-5 ${language === 'fa' ? 'text-right' : 'text-left'}`}>
-                  <div className="flex items-start justify-between gap-3">
-                    <h2 className="text-base font-semibold leading-6 text-white sm:text-lg">{name}</h2>
-                    <span className="shrink-0 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs font-semibold text-amber-200">
-                      {formatPrice(item.price, language)}
-                    </span>
+      <div className="home-ring-stage relative mx-auto h-[410px] w-full max-w-5xl sm:h-[450px]">
+        <div
+          className="home-ring mx-auto"
+          style={{ transform: `translateZ(-${radius}px) rotateY(${-activeIndex * angle}deg)` }}
+        >
+          {items.map((item, index) => {
+            const quantity = cartQuantities[String(item.id)] ?? 0;
+            const name = item.name[language] || item.name.en;
+            const description =
+              typeof item.description === 'object'
+                ? item.description[language] || item.description.en
+                : item.description;
+            const isActive = index === activeIndex;
+
+            return (
+              <div
+                key={item.id}
+                className="home-ring-panel"
+                data-active={isActive}
+                aria-hidden={!isActive}
+                style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}
+              >
+                <article className="home-ring-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl transition duration-300 hover:border-amber-300/30">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-white/[0.06] to-slate-900 p-3 sm:p-4">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={name}
+                        loading={Math.abs(index - activeIndex) < 2 ? 'eager' : 'lazy'}
+                        className="h-full w-full rounded-2xl border border-white/10 bg-slate-950/40 object-contain p-2 transition duration-500 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-sm text-white/40">
+                        {isRtl ? 'تصویری موجود نیست' : 'No image available'}
+                      </div>
+                    )}
+                    {quantity > 0 && (
+                      <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-amber-300 px-3 py-1 text-xs font-bold text-slate-950 shadow-lg">
+                        <CheckIcon className="h-3.5 w-3.5" />
+                        {quantity}
+                      </span>
+                    )}
                   </div>
-                  {description && (
-                    <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-white/60 sm:text-sm">
-                      {description}
-                    </p>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      dispatch(
-                        addToCart({
-                          ...item,
-                          name,
-                          image: item.image ?? '',
-                        }),
-                      )
-                    }
-                    className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:scale-[0.99]"
-                    aria-label={language === 'fa' ? `افزودن ${name} به سبد خرید` : `Add ${name} to cart`}
-                  >
-                    <ShoppingBagIcon className="h-4 w-4" />
-                    {language === 'fa' ? 'افزودن به سبد خرید' : 'Add to cart'}
-                  </button>
-                </div>
-              </article>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+                  <div className={`flex flex-1 flex-col p-4 sm:p-5 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <h2 className="text-base font-semibold leading-6 text-white sm:text-lg">{name}</h2>
+                      <span className="shrink-0 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs font-semibold text-amber-200">
+                        {formatPrice(item.price, language)}
+                      </span>
+                    </div>
+                    {description && (
+                      <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-white/60 sm:text-sm">
+                        {description}
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => dispatch(addToCart({ ...item, name, image: item.image ?? '' }))}
+                      tabIndex={isActive ? 0 : -1}
+                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:scale-[0.99]"
+                      aria-label={isRtl ? `افزودن ${name} به سبد خرید` : `Add ${name} to cart`}
+                    >
+                      <ShoppingBagIcon className="h-4 w-4" />
+                      {isRtl ? 'افزودن به سبد خرید' : 'Add to cart'}
+                    </button>
+                  </div>
+                </article>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mx-auto flex max-w-5xl items-center justify-center gap-5 pb-3 pt-2 text-white">
+        <button
+          type="button"
+          onClick={() => step(isRtl ? 1 : -1)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition hover:border-amber-300/60 hover:bg-amber-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          aria-label={isRtl ? 'محصول قبلی' : 'Previous product'}
+        >
+          {isRtl ? <ChevronRightIcon className="h-5 w-5" /> : <ChevronLeftIcon className="h-5 w-5" />}
+        </button>
+        <p className="min-w-24 text-center text-xs font-medium text-white/65" aria-hidden="true">
+          <span className="text-amber-200">{activeIndex + 1}</span> / {items.length}
+        </p>
+        <button
+          type="button"
+          onClick={() => step(isRtl ? -1 : 1)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition hover:border-amber-300/60 hover:bg-amber-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          aria-label={isRtl ? 'محصول بعدی' : 'Next product'}
+        >
+          {isRtl ? <ChevronLeftIcon className="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
+        </button>
+      </div>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {isRtl
+          ? `محصول ${activeIndex + 1} از ${items.length}: ${activeItem?.name[language] || activeItem?.name.en || ''}`
+          : `Product ${activeIndex + 1} of ${items.length}: ${activeItem?.name[language] || activeItem?.name.en || ''}`}
+      </p>
+      <p className="sr-only">
+        {isRtl ? 'برای جابه‌جایی از کلیدهای جهت‌دار استفاده کنید.' : 'Use the arrow keys to navigate products. Home goes to the first product; End goes to the last.'}
+      </p>
     </section>
   );
 }
