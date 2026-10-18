@@ -220,7 +220,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                 style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}
               >
                 <article
-                  className="home-ring-card group flex w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl hover:border-amber-300/30"
+                  className="home-ring-card group flex w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-xl shadow-black/20 hover:border-amber-300/30"
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => {
                     if (index !== activeIndex) return;
@@ -240,7 +240,8 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                       <img
                         src={item.image}
                         alt={name}
-                        loading={Math.abs(index - activeIndex) < 2 ? 'eager' : 'lazy'}
+                        loading={isActive ? 'eager' : 'lazy'}
+                        decoding="async"
                         className="h-full w-full rounded-2xl border border-white/10 bg-slate-950/40 object-contain p-2 transition duration-500 group-hover:scale-[1.03]"
                       />
                     ) : (
