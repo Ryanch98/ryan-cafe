@@ -79,7 +79,7 @@ export default function CoffeeAnimation({
         </defs>
 
         {/* Cup is stationary; liquid grows inside the opening in canvas space. */}
-        <g transform={reverse ? 'translate(320 0) scale(-1 1)' : undefined}>
+        <g>
           <image
             href="/pic/cup.png"
             x={layout.cupX}
@@ -139,7 +139,7 @@ export default function CoffeeAnimation({
         src={machineImage}
         alt=""
         draggable={false}
-        className={`pointer-events-none absolute left-[28%] top-[1%] h-[48%] w-[68%] select-none object-contain ${reverse ? '-scale-x-100' : ''}`}
+        className="pointer-events-none absolute left-[28%] top-[1%] h-[48%] w-[68%] select-none object-contain"
       />
     </div>
   );
