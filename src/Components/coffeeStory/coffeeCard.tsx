@@ -81,7 +81,7 @@ export default function CoffeeCard({
             <ArrowLeftCircleIcon className="h-6 w-6" />
           </button>
           <div className="relative flex min-w-0 flex-1 items-center justify-center">
-            <CoffeeAnimation reverse={reverse} progress={progress} machineImage={image} />
+            <CoffeeAnimation progress={progress} machineImage={image} />
           </div>
           <button
             type="button"
