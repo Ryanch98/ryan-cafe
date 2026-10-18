@@ -112,7 +112,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const angle = items.length ? 360 / items.length : 0;
   const radius = useMemo(() => {
     if (items.length < 2) return 0;
-    const cardWidth = isSmallScreen ? 220 : 320;
+    const cardWidth = isSmallScreen ? 110 : 320;
     return Math.max(185, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length))));
   }, [items.length, isSmallScreen]);
 
@@ -146,7 +146,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         .home-ring-stage img { -webkit-user-drag: none; }
         .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-        @media (max-width: 639px) { .home-ring, .home-ring-panel { width: 220px; } }
+        @media (max-width: 639px) { .home-ring, .home-ring-panel { width: 110px; } }
         .home-ring-card { transform: perspective(900px) rotateX(0deg); transform-origin: 50% 0%; transition: transform 320ms ease, border-color 320ms ease; }
         .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible { transform: perspective(900px) rotateX(16deg) translateY(5px); }
         .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel:not([data-pinned="true"]) { filter: blur(5px); opacity: .22; transition: filter 300ms ease, opacity 300ms ease; }
