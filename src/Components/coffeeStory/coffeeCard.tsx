@@ -1,5 +1,5 @@
 import CoffeeAnimation from './coffeeAnimation';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 
 import { useAppSelector } from '../../redux/hooks';
@@ -27,14 +27,19 @@ export default function CoffeeCard({
   const [progress, setProgress] = useState(0);
   const language = useAppSelector((state) => state.language.lang) as Language;
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const element = e.currentTarget;
     const maxScroll = element.scrollHeight - element.clientHeight;
-    setProgress(maxScroll > 0 ? element.scrollTop / maxScroll : 0);
-  };
+    const nextProgress = maxScroll > 0
+      ? Math.min(1, Math.max(0, element.scrollTop / maxScroll))
+      : 0;
+
+    // Avoid React work when the normalized scroll position has not changed.
+    setProgress((previous) => previous === nextProgress ? previous : nextProgress);
+  }, []);
 
   return (
-    <div className="flex h-screen w-full flex-col px-1 py-5 sm:gap-20">
+    <div className="flex min-h-screen w-full flex-col px-1 py-5 sm:gap-20">
       <div className="sticky top-5 flex w-full flex-col items-center gap-2 pt-2 text-center">
         <span className="rounded-full bg-amber-200/20 px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-amber-200">
           {translations[language].title}
@@ -50,23 +55,23 @@ export default function CoffeeCard({
       </div>
 
       <div
-        className={`flex w-full max-w-7xl flex-col gap-14 rounded-[34px] px-2 shadow-2xl shadow-slate-900/10 backdrop-blur-xl transition-all duration-500 sm:sticky sm:top-52 sm:flex-col sm:gap-8 sm:border sm:border-slate-200/30 sm:bg-white/90 sm:p-6 ${
+        className={`flex w-full max-w-7xl flex-col gap-8 rounded-[34px] px-3 py-4 shadow-2xl shadow-slate-900/10 backdrop-blur-xl sm:sticky sm:top-52 sm:gap-8 sm:border sm:border-slate-200/30 sm:bg-white/90 sm:p-6 ${
           reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'
         }`}
       >
-        <div className="flex w-full flex-col gap-2 sm:h-auto sm:w-full sm:gap-8 sm:text-center lg:w-[85%] lg:text-left">
-          <h3 className="pb-4 text-center text-2xl font-bold leading-tight text-amber-200 sm:pb-0 sm:text-3xl sm:text-slate-900">
+        <div className="flex min-w-0 w-full flex-col gap-2 sm:gap-8 sm:text-center lg:w-[55%] lg:text-left">
+          <h3 className="pb-2 text-center text-2xl font-bold leading-tight text-amber-200 sm:pb-0 sm:text-3xl sm:text-slate-900">
             {title}
           </h3>
           <div
             ref={descriptionRef}
-            className="h-[30vh] overflow-y-auto rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700 sm:h-[430px] sm:rounded-3xl sm:border sm:border-slate-200/70 sm:p-6 sm:text-base sm:leading-7 sm:shadow-inner sm:shadow-slate-200/40"
+            className="h-[30vh] min-h-[180px] overflow-y-auto overscroll-contain rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700 sm:h-[430px] sm:rounded-3xl sm:border sm:border-slate-200/70 sm:p-6 sm:text-base sm:leading-7 sm:shadow-inner sm:shadow-slate-200/40"
             onScroll={handleScroll}
           >
             {description}
           </div>
         </div>
-        <div className="flex w-full flex-row items-center justify-between gap-2 sm:w-[50%] sm:pt-0">
+        <div className="flex min-w-0 w-full flex-row items-center justify-between gap-2 sm:pt-0 lg:w-[45%]">
           <button
             type="button"
             onClick={() => onReachEnd('prev')}
@@ -75,10 +80,8 @@ export default function CoffeeCard({
           >
             <ArrowLeftCircleIcon className="h-6 w-6" />
           </button>
-          <div className="relative flex w-full items-center justify-center lg:w-[45%]">
-            <div className="z-20 flex w-full items-center justify-center sm:top-1/2 sm:h-[350px] lg:relative lg:top-auto lg:h-[500px] lg:translate-y-0">
-              <CoffeeAnimation reverse={reverse} progress={progress} machineImage={image} />
-            </div>
+          <div className="relative flex min-w-0 flex-1 items-center justify-center">
+            <CoffeeAnimation reverse={reverse} progress={progress} machineImage={image} />
           </div>
           <button
             type="button"
