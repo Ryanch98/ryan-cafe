@@ -81,7 +81,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const angle = items.length ? 360 / items.length : 0;
   const radius = useMemo(() => {
     if (items.length < 2) return 0;
-    const cardWidth = 250;
+    const cardWidth = 320;
     return Math.max(185, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length))));
   }, [items.length]);
 
@@ -106,8 +106,8 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         .home-ring-stage { perspective: 1200px; perspective-origin: 50% 42%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
         .home-ring-stage:active { cursor: grabbing; }
         .home-ring-stage img { -webkit-user-drag: none; }
-        .home-ring { position: relative; width: 250px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
-        .home-ring-panel { position: absolute; inset: 0; width: 250px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
+        .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
         .home-ring-carousel:focus-visible { outline: 2px solid #fcd34d; outline-offset: 5px; border-radius: 1rem; }
         @media (prefers-reduced-motion: reduce) {
           .home-ring { transform: none !important; transition: none !important; }
@@ -118,7 +118,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
       `}</style>
 
       <div
-        className="home-ring-stage relative mx-auto h-[410px] w-full max-w-5xl sm:h-[450px]"
+        className="home-ring-stage relative mx-auto h-[470px] w-full max-w-6xl sm:h-[510px]"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
