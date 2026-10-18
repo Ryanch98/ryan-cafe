@@ -18,10 +18,16 @@ export default function CategorySelector({
   const [isOpen, setIsOpen] = useState(false);
   const isRTL = language === 'fa';
 
+  const categoryPosition: Record<string, string> = {
+    drinks: 'menu-orbit-drinks',
+    foods: 'menu-orbit-foods',
+    cakes: 'menu-orbit-cakes',
+  };
+
   return (
     <nav
       aria-label={isRTL ? 'دسته‌بندی‌های منو' : 'Menu categories'}
-      className="menu-gooey-root relative z-20 px-4 pt-5 sm:pt-8"
+      className={`menu-orbit-root relative z-20 px-4 pt-3 sm:pt-5 ${isOpen ? 'menu-orbit-open' : ''}`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
       onFocus={() => setIsOpen(true)}
@@ -32,61 +38,129 @@ export default function CategorySelector({
       }}
     >
       <style>{`
-        .menu-gooey-root .menu-gooey-blobs {
-          filter: url(#menu-gooey-filter);
-          pointer-events: none;
+        .menu-orbit-root .menu-orbit-stage {
+          position: relative;
+          width: min(100%, 340px);
+          height: 244px;
+          margin: 0 auto;
           isolation: isolate;
         }
-        .menu-gooey-root .menu-gooey-blob {
+        .menu-orbit-root .menu-orbit-main {
+          position: absolute;
+          z-index: 5;
+          left: 50%;
+          top: 126px;
+          width: 112px;
+          height: 112px;
+          transform: translateX(-50%);
+          border-radius: 9999px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          border: 1px solid rgba(252,211,77,.72);
+          background: radial-gradient(circle at 35% 25%, rgba(120,53,15,.65), rgba(2,6,23,.98) 70%);
+          color: #fde68a;
+          box-shadow: 0 0 0 6px rgba(251,191,36,.045), 0 12px 38px rgba(0,0,0,.4), inset 0 0 24px rgba(251,191,36,.08);
+          transition: box-shadow 300ms ease, border-color 300ms ease, transform 300ms ease;
+        }
+        .menu-orbit-root .menu-orbit-main:hover,
+        .menu-orbit-root .menu-orbit-main:focus-visible {
+          border-color: #fcd34d;
+          box-shadow: 0 0 0 8px rgba(251,191,36,.09), 0 0 36px rgba(251,191,36,.18), 0 12px 38px rgba(0,0,0,.4);
+          outline: 2px solid #fcd34d;
+          outline-offset: 4px;
+        }
+        .menu-orbit-root .menu-orbit-category {
+          position: absolute;
+          z-index: 4;
+          display: flex;
+          width: 88px;
+          height: 88px;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          border-radius: 9999px;
+          border: 1px solid rgba(255,255,255,.16);
+          background: radial-gradient(circle at 35% 25%, rgba(51,65,85,.98), rgba(2,6,23,.98) 78%);
+          color: rgba(255,255,255,.88);
+          box-shadow: 0 8px 24px rgba(0,0,0,.32);
+          opacity: 0;
+          pointer-events: none;
+          transform: translate(0, 12px) scale(.48);
+          transition: opacity 280ms ease, transform 440ms cubic-bezier(.2,.85,.2,1), border-color 250ms ease, background 250ms ease;
+        }
+        .menu-orbit-root .menu-orbit-drinks { left: 5px; top: 91px; }
+        .menu-orbit-root .menu-orbit-foods { left: 50%; top: 3px; }
+        .menu-orbit-root .menu-orbit-cakes { right: 5px; top: 91px; }
+        .menu-orbit-root.menu-orbit-open .menu-orbit-category,
+        .menu-orbit-root:focus-within .menu-orbit-category {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translate(0, 0) scale(1);
+        }
+        .menu-orbit-root .menu-orbit-foods { transform: translate(0, 25px) scale(.48); }
+        .menu-orbit-root.menu-orbit-open .menu-orbit-foods,
+        .menu-orbit-root:focus-within .menu-orbit-foods { transform: translateX(-50%) translateY(0) scale(1); }
+        .menu-orbit-root .menu-orbit-category:hover,
+        .menu-orbit-root .menu-orbit-category:focus-visible,
+        .menu-orbit-root .menu-orbit-category[aria-pressed="true"] {
+          border-color: rgba(252,211,77,.9);
+          background: radial-gradient(circle at 35% 25%, rgba(120,53,15,.95), rgba(2,6,23,.98) 78%);
+          color: #fde68a;
+          box-shadow: 0 0 0 4px rgba(251,191,36,.07), 0 0 25px rgba(251,191,36,.16);
+          outline: none;
+        }
+        .menu-orbit-root .menu-orbit-foods { margin-left: -44px; }
+        .menu-orbit-root .menu-orbit-goo {
+          position: absolute;
+          z-index: 2;
+          inset: 8px 4px 10px;
+          pointer-events: none;
+          filter: url(#menu-orbit-goo-filter);
+        }
+        .menu-orbit-root .menu-orbit-goo span {
           position: absolute;
           display: block;
           border-radius: 9999px;
           background: #fbbf24;
-          opacity: .85;
-          will-change: transform;
+          opacity: 0;
+          transition: opacity 250ms ease, transform 450ms cubic-bezier(.2,.85,.2,1);
         }
-        .menu-gooey-root .menu-gooey-blob-one {
-          width: 24px; height: 24px; left: calc(50% - 48px); top: 8px;
-          animation: menu-gooey-float-one 2.4s ease-in-out infinite;
-        }
-        .menu-gooey-root .menu-gooey-blob-two {
-          width: 17px; height: 17px; left: calc(50% + 23px); top: 23px;
-          animation: menu-gooey-float-two 2.1s ease-in-out infinite;
-        }
-        .menu-gooey-root .menu-gooey-blob-three {
-          width: 12px; height: 12px; left: calc(50% + 4px); top: 1px;
-          animation: menu-gooey-float-three 1.8s ease-in-out infinite;
-        }
-        @keyframes menu-gooey-float-one {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-15px, -10px) scale(.78); }
-        }
-        @keyframes menu-gooey-float-two {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(13px, 8px) scale(1.2); }
-        }
-        @keyframes menu-gooey-float-three {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(8px, -12px) scale(.75); }
-        }
-        .menu-gooey-root .menu-category-panel {
-          animation: menu-category-reveal 320ms cubic-bezier(.2,.8,.2,1) both;
-        }
-        @keyframes menu-category-reveal {
-          from { opacity: 0; transform: translateY(-8px) scale(.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+        .menu-orbit-root .menu-orbit-goo span:nth-child(1) { width: 22px; height: 22px; left: 25%; top: 43%; }
+        .menu-orbit-root .menu-orbit-goo span:nth-child(2) { width: 17px; height: 17px; left: 48%; top: 23%; }
+        .menu-orbit-root .menu-orbit-goo span:nth-child(3) { width: 20px; height: 20px; right: 24%; top: 43%; }
+        .menu-orbit-root.menu-orbit-open .menu-orbit-goo span,
+        .menu-orbit-root:focus-within .menu-orbit-goo span { opacity: .9; }
+        .menu-orbit-root.menu-orbit-open .menu-orbit-goo span:nth-child(1),
+        .menu-orbit-root:focus-within .menu-orbit-goo span:nth-child(1) { transform: translate(-22px, 9px) scale(.7); }
+        .menu-orbit-root.menu-orbit-open .menu-orbit-goo span:nth-child(2),
+        .menu-orbit-root:focus-within .menu-orbit-goo span:nth-child(2) { transform: translateY(-11px) scale(.75); }
+        .menu-orbit-root.menu-orbit-open .menu-orbit-goo span:nth-child(3),
+        .menu-orbit-root:focus-within .menu-orbit-goo span:nth-child(3) { transform: translate(22px, 9px) scale(.7); }
+        .menu-orbit-root .menu-orbit-category img { width: 31px; height: 31px; object-fit: contain; }
+        .menu-orbit-root .menu-orbit-category span { max-width: 76px; padding: 0 3px; font-size: 11px; font-weight: 700; line-height: 1.15; text-align: center; }
+        @media (max-width: 380px) {
+          .menu-orbit-root .menu-orbit-stage { transform: scale(.92); transform-origin: top center; margin-bottom: -19px; }
+          .menu-orbit-root .menu-orbit-main { width: 104px; height: 104px; }
+          .menu-orbit-root .menu-orbit-category { width: 82px; height: 82px; }
+          .menu-orbit-root .menu-orbit-drinks { left: 2px; }
+          .menu-orbit-root .menu-orbit-cakes { right: 2px; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .menu-gooey-root .menu-gooey-blob,
-          .menu-gooey-root .menu-category-panel { animation: none !important; }
+          .menu-orbit-root .menu-orbit-main,
+          .menu-orbit-root .menu-orbit-category,
+          .menu-orbit-root .menu-orbit-goo span { transition: none !important; }
         }
       `}</style>
+
       <svg aria-hidden="true" className="absolute h-0 w-0 overflow-hidden">
         <defs>
-          <filter id="menu-gooey-filter" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="soft-blur" />
+          <filter id="menu-orbit-goo-filter" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
             <feColorMatrix
-              in="soft-blur"
+              in="blur"
               mode="matrix"
               values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
               result="goo"
@@ -96,80 +170,49 @@ export default function CategorySelector({
         </defs>
       </svg>
 
-      <div className="relative mx-auto flex max-w-3xl flex-col items-center">
-        <div className="relative flex min-h-16 items-center justify-center">
-          <div className="menu-gooey-blobs absolute inset-0" aria-hidden="true">
-            <span className="menu-gooey-blob menu-gooey-blob-one" />
-            <span className="menu-gooey-blob menu-gooey-blob-two" />
-            <span className="menu-gooey-blob menu-gooey-blob-three" />
-          </div>
-          <button
-            type="button"
-            aria-expanded={isOpen}
-            aria-controls="home-menu-categories"
-            onClick={() => setIsOpen(true)}
-            className="relative z-10 rounded-full border border-amber-300/30 bg-slate-950/90 px-8 py-3 text-xl font-black tracking-[0.18em] text-amber-200 shadow-lg shadow-amber-950/20 transition hover:border-amber-200/70 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:text-2xl"
-          >
-            {isRTL ? 'منو' : 'Menu'}
-            <span aria-hidden="true" className={`ms-2 inline-block text-xs transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>⌄</span>
-          </button>
+      <div className="menu-orbit-stage">
+        <div className="menu-orbit-goo" aria-hidden="true">
+          <span />
+          <span />
+          <span />
         </div>
 
-        {isOpen && (
-          <div
-            id="home-menu-categories"
-            className="menu-category-panel relative mt-3 w-full"
-          >
-            <div className="menu-gooey-blobs absolute inset-x-0 top-1/2 h-12 -translate-y-1/2" aria-hidden="true">
-              <span className="menu-gooey-blob menu-gooey-blob-one" />
-              <span className="menu-gooey-blob menu-gooey-blob-two" />
-              <span className="menu-gooey-blob menu-gooey-blob-three" />
-            </div>
-            <div className="relative mx-auto flex max-w-3xl items-stretch justify-center gap-3 sm:gap-6">
-              {items.map((item) => {
-                const isSelected = selectedCategory === item.key;
+        <button
+          type="button"
+          className="menu-orbit-main"
+          aria-expanded={isOpen}
+          aria-controls="home-menu-categories"
+          onClick={() => setIsOpen((open) => !open)}
+          onFocus={() => setIsOpen(true)}
+        >
+          <span className="text-xl font-black tracking-[0.12em]">{isRTL ? 'منو' : 'Menu'}</span>
+          <span aria-hidden="true" className="mt-1 text-[10px] tracking-[0.16em] text-amber-100/55">● ● ●</span>
+        </button>
 
-                return (
-                  <button
-                    key={item.key}
-                    type="button"
-                    onClick={() => {
-                      onSelectCategory(item.key);
-                      setIsOpen(false);
-                    }}
-                    className={`group flex min-w-0 flex-1 max-w-40 flex-col items-center gap-2 rounded-2xl border px-3 py-3 transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:gap-3 sm:rounded-3xl sm:px-5 sm:py-4 ${
-                      isSelected
-                        ? 'border-amber-300/70 bg-amber-300/15 shadow-lg shadow-amber-950/20'
-                        : 'border-white/10 bg-slate-950/90 hover:-translate-y-1 hover:border-amber-200/50 hover:bg-slate-900'
-                    }`}
-                    aria-pressed={isSelected}
-                    aria-label={`Select ${translations[language][item.name]} category`}
-                  >
-                    <span className={`flex h-14 w-14 items-center justify-center rounded-2xl transition sm:h-20 sm:w-20 ${
-                      isSelected ? 'bg-amber-300/15' : 'bg-white/5 group-hover:bg-white/10'
-                    }`}>
-                      <img
-                        className="h-11 w-11 object-contain sm:h-16 sm:w-16"
-                        src={item.pic.startsWith('/') ? item.pic : `/${item.pic}`}
-                        alt=""
-                        aria-hidden="true"
-                        loading="lazy"
-                      />
-                    </span>
-                    <span className={`text-center text-xs font-semibold sm:text-sm ${
-                      isSelected ? 'text-amber-200' : 'text-white/85'
-                    }`}>
-                      {translations[language][item.name]}
-                    </span>
-                    <span className={`h-1 w-5 rounded-full transition-all ${
-                      isSelected ? 'w-8 bg-amber-300' : 'bg-transparent'
-                    }`} />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <div id="home-menu-categories" aria-label={isRTL ? 'انتخاب دسته‌بندی' : 'Choose a category'}>
+          {items.map((item) => {
+            const isSelected = selectedCategory === item.key;
+            const categoryLabel = translations[language][item.name];
+
+            return (
+              <button
+                key={item.key}
+                type="button"
+                className={`menu-orbit-category ${categoryPosition[item.key] || ''}`}
+                onClick={() => {
+                  onSelectCategory(item.key);
+                  setIsOpen(false);
+                }}
+                aria-pressed={isSelected}
+                aria-label={`Select ${categoryLabel} category`}
+                tabIndex={isOpen ? 0 : -1}
+              >
+                <img src={item.pic.startsWith('/') ? item.pic : `/${item.pic}`} alt="" aria-hidden="true" loading="lazy" />
+                <span>{categoryLabel}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
