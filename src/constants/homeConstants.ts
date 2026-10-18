@@ -10,17 +10,17 @@ export const HOME_CAROUSEL_IMAGES = [
 // Category menu items for home page
 export const HOME_CATEGORY_MENU = [
   {
-    pic: 'pic/croissant.png',
+    pic: 'pic/cake.svg',
     name: 'menuCakes',
     key: 'cakes',
   },
   {
-    pic: 'pic/iteams/pizza/pz1.png',
+    pic: 'pic/pizza.svg',
     name: 'menuFoods',
     key: 'foods',
   },
   {
-    pic: 'pic/iteams/capo.png',
+    pic: 'pic/coffee.svg',
     name: 'menuDrinks',
     key: 'drinks',
   },
