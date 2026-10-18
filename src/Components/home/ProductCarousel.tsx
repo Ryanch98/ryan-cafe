@@ -176,6 +176,19 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         }
       `}</style>
 
+      {pinnedIndex !== null && pinnedDescription && (
+        <div
+          className="relative z-[70] mx-auto mb-3 w-full max-w-sm px-3"
+          aria-live="polite"
+        >
+          <div className="rounded-2xl border border-amber-300/30 bg-slate-950/95 px-4 py-3 text-center text-sm leading-6 text-white shadow-2xl shadow-black/40">
+            {typedDescription || pinnedDescription.slice(0, 1)}
+          </div>
+          <span className="mx-auto block h-5 w-0.5 bg-gradient-to-b from-amber-300 to-amber-300/30" aria-hidden="true" />
+          <span className="mx-auto block h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,.8)]" aria-hidden="true" />
+        </div>
+      )}
+
       <div
         className={`home-ring-stage relative mx-auto h-[470px] w-full max-w-6xl sm:h-[430px] ${pinnedIndex !== null ? 'z-[50]' : ''}`}
         onPointerDown={handlePointerDown}
@@ -210,13 +223,6 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                 aria-hidden={!isActive}
                 style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}
               >
-                {description && (
-                  <div className="home-ring-pin" aria-live="polite">
-                    <p className="home-ring-pin-label">{pinnedIndex === index ? typedDescription : description}</p>
-                    <span className="home-ring-pin-stem" aria-hidden="true" />
-                    <span className="home-ring-pin-dot" aria-hidden="true" />
-                  </div>
-                )}
                 <article
                   className="home-ring-card group flex w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl hover:border-amber-300/30"
                   tabIndex={isActive ? 0 : -1}
