@@ -15,6 +15,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const [activeIndex, setActiveIndex] = useState(0);
   const [pinnedIndex, setPinnedIndex] = useState<number | null>(null);
   const [typedDescription, setTypedDescription] = useState('');
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const dragStartX = useRef<number | null>(null);
   const dragStartIndex = useRef(0);
   const dragMoved = useRef(false);
@@ -27,6 +28,13 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const dispatch = useAppDispatch();
   const isRtl = language === 'fa';
   const activeItem = items[activeIndex];
+
+  useEffect(() => {
+    const updateScreenSize = () => setIsSmallScreen(window.innerWidth < 640);
+    updateScreenSize();
+    window.addEventListener('resize', updateScreenSize);
+    return () => window.removeEventListener('resize', updateScreenSize);
+  }, []);
 
   useEffect(() => {
     setActiveIndex(0);
@@ -104,9 +112,9 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const angle = items.length ? 360 / items.length : 0;
   const radius = useMemo(() => {
     if (items.length < 2) return 0;
-    const cardWidth = 320;
+    const cardWidth = isSmallScreen ? 280 : 320;
     return Math.max(185, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length))));
-  }, [items.length]);
+  }, [items.length, isSmallScreen]);
 
   if (!items.length) {
     return (
@@ -120,17 +128,25 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
     <section
       aria-label={isRtl ? 'محصولات منو' : 'Menu products'}
       aria-roledescription={isRtl ? 'چرخ‌وفلک سه‌بعدی' : '3D carousel'}
-      className="home-ring-carousel w-full px-3 pt-3 sm:px-5 sm:pt-5"
+      className={`home-ring-carousel relative w-full px-3 pt-3 sm:px-5 sm:pt-5 ${pinnedIndex !== null ? 'z-[60]' : ''}`}
       dir={isRtl ? 'rtl' : 'ltr'}
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
+      {pinnedIndex !== null && (
+        <div
+          className="fixed inset-0 z-[40] bg-slate-950/30 backdrop-blur-md"
+          aria-hidden="true"
+          onClick={() => setPinnedIndex(null)}
+        />
+      )}
       <style>{`
         .home-ring-stage { perspective: 1200px; perspective-origin: 50% 42%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
         .home-ring-stage:active { cursor: grabbing; }
         .home-ring-stage img { -webkit-user-drag: none; }
         .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        @media (max-width: 639px) { .home-ring, .home-ring-panel { width: 280px; } }
         .home-ring-card { transform: perspective(900px) rotateX(0deg); transform-origin: 50% 0%; transition: transform 320ms ease, border-color 320ms ease; }
         .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible { transform: perspective(900px) rotateX(16deg) translateY(5px); }
         .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel:not([data-pinned="true"]) { filter: blur(5px); opacity: .22; transition: filter 300ms ease, opacity 300ms ease; }
@@ -152,7 +168,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
       `}</style>
 
       <div
-        className="home-ring-stage relative mx-auto h-[470px] w-full max-w-6xl sm:h-[510px]"
+        className={`home-ring-stage relative mx-auto h-[410px] w-full max-w-6xl sm:h-[430px] ${pinnedIndex !== null ? 'z-[50]' : ''}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -189,7 +205,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                   </div>
                 )}
                 <article
-                  className="home-ring-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl hover:border-amber-300/30"
+                  className="home-ring-card group flex w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl hover:border-amber-300/30"
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => setPinnedIndex((current) => current === index ? null : index)}
                   onKeyDown={(event) => {
@@ -245,7 +261,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-5xl items-center justify-center gap-5 pb-3 pt-2 text-white">
+      <div className={`relative mx-auto flex max-w-5xl items-center justify-center gap-5 pb-3 pt-2 text-white ${pinnedIndex !== null ? 'z-[50]' : ''}`}>
         <button
           type="button"
           onClick={() => step(isRtl ? 1 : -1)}
