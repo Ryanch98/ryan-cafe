@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Footer from './footer';
 import LanguageSwitcher from './LanguageSwitcher';
-import SkeletonLoader from './SkeletonLoader';
 import CoffeeAssistant from './CoffeeAssistant';
 import CoffeeAssistantButton from './CoffeeAssistantButton';
 import { useAppSelector } from '../redux/hooks';
@@ -12,7 +11,6 @@ import type { Language } from '../constants/types';
 export default function Layout() {
   const location = useLocation();
   const isHome = location.pathname === '/';
-  const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAssistant, setShowAssistant] = useState(false);
   const language = useAppSelector((state) => state.language.lang) as Language;
@@ -22,10 +20,7 @@ export default function Layout() {
   const isRTL = language === 'fa';
 
   useEffect(() => {
-    setLoading(true);
     setMobileMenuOpen(false);
-    const timer = window.setTimeout(() => setLoading(false), 250);
-    return () => window.clearTimeout(timer);
   }, [location.pathname]);
 
   const navClass = 'rounded-full px-4 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white';
@@ -81,12 +76,10 @@ export default function Layout() {
           </nav>
         )}
       </header>}
-      {loading ? <div className="flex-1"><SkeletonLoader isHome={isHome} /></div> : (
-        <main id="main-content" className={`w-full flex-1 ${isHome ? '' : 'mx-auto max-w-7xl px-3 pb-12 pt-5 sm:px-6 sm:pt-8 lg:px-8'}`}>
-          <Outlet />
-        </main>
-      )}
-      {!loading && <Footer />}
+      <main id="main-content" className={`w-full flex-1 ${isHome ? '' : 'mx-auto max-w-7xl px-3 pb-12 pt-5 sm:px-6 sm:pt-8 lg:px-8'}`}>
+        <Outlet />
+      </main>
+      <Footer />
       <CoffeeAssistantButton onClick={() => setShowAssistant(true)} language={language} />
       <CoffeeAssistant isOpen={showAssistant} onClose={() => setShowAssistant(false)} language={language} />
     </div>
