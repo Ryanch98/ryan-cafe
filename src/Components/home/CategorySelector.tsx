@@ -100,9 +100,9 @@ export default function CategorySelector({
           pointer-events: auto;
           transform: translate(0, 0) scale(1);
         }
-        .menu-orbit-root .menu-orbit-foods { transform: translate(0, 25px) scale(.48); }
+        .menu-orbit-root .menu-orbit-foods { transform: translate(-50%, 25px) scale(.48); }
         .menu-orbit-root.menu-orbit-open .menu-orbit-foods,
-        .menu-orbit-root:focus-within .menu-orbit-foods { transform: translateX(-50%) translateY(0) scale(1); }
+        .menu-orbit-root:focus-within .menu-orbit-foods { transform: translate(-50%, 0) scale(1); }
         .menu-orbit-root .menu-orbit-category:hover,
         .menu-orbit-root .menu-orbit-category:focus-visible,
         .menu-orbit-root .menu-orbit-category[aria-pressed="true"] {
@@ -112,7 +112,6 @@ export default function CategorySelector({
           box-shadow: 0 0 0 4px rgba(251,191,36,.07), 0 0 25px rgba(251,191,36,.16);
           outline: none;
         }
-        .menu-orbit-root .menu-orbit-foods { margin-left: -44px; }
         .menu-orbit-root .menu-orbit-goo {
           position: absolute;
           z-index: 2;
