@@ -1,204 +1,150 @@
-import { motion, useAnimationFrame } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
-export default function CoffeeAnimation({ reverse, progress = 0, machineImage }) {
-  const pressOpacity = progress <= 0 || progress >= 0.95 ? 0 : 1;
-  const surfaceOpacity = progress > 0.95 ? (progress - 0.95) / 0.05 : 0;
-  const rotate = progress * -40;
+interface CoffeeAnimationProps {
+  reverse: boolean;
+  progress?: number;
+  machineImage: string;
+}
 
-  const t = useRef(0);
-  const [, setTick] = useState(0);
-  useAnimationFrame((time) => {
-    t.current = time / 1000;
-    setTick((v) => v + 1);
-  });
-
-  function getStreamScale(rotate) {
-    const angle = Math.abs(rotate);
-
-    if (angle < 30) {
-      return 0;
-    }
-
-    return Math.min((angle - 30) / 10, 1);
-  }
-
-  function wave(t, speed = 1, amp = 1, offset = 0) {
-    return Math.sin(t * speed + offset) * amp;
-  }
-  const baseX = 24;
-
-  const p = (y, ox, oy) => {
-    const time = t.current;
-
-    const nx = wave(time, 2.2, ox, y * 0.1);
-    const ny = wave(time, 1.8, oy, y * 0.05);
-
-    return `${baseX + nx} ${y + ny}`;
-  };
-
-  const path = `
-    M ${p(0, 2, 0)}
-    C ${p(0, 6, 2)} ${p(100, 8, 4)} ${p(150, 6, 2)}
-    C ${p(200, 5, 3)} ${p(230, 3, 2)} ${p(260, 2, 1)}
-    L 34 260
-    C ${p(20, 3, 2)} ${p(20, 4, 3)} ${p(50, 5, 2)}
-    C ${p(100, 6, 3)} ${p(50, 5, 2)} ${p(0, 2, 0)}
-    Z
-  `;
+export default function CoffeeAnimation({
+  reverse,
+  progress = 0,
+  machineImage,
+}: CoffeeAnimationProps) {
+  const amount = Math.min(1, Math.max(0, progress));
+  // Leave a short intro and outro so the pour feels intentional.
+  const pourProgress = Math.min(1, Math.max(0, (amount - 0.12) / 0.68));
+  const streamOpacity = amount > 0.12 && amount < 0.86 ? 1 : 0;
+  const coffeeLevel = Math.min(1, Math.max(0, (amount - 0.35) / 0.58));
 
   return (
     <div
-      className={`relative flex h-[280px] w-full items-center justify-center sm:h-[350px] lg:h-[500px] ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} `}
+      className={`relative flex h-[280px] w-full items-center justify-center sm:h-[350px] lg:h-[500px] ${
+        reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'
+      }`}
+      aria-label="Coffee pouring into a cup"
     >
-      {/* Coffee Machine */}
+      {/* Espresso machine */}
       <motion.div
+        className={`absolute left-[calc(50%-55px)] top-2 z-20 w-[130px] sm:left-[calc(50%-100px)] sm:top-[40px] sm:w-[200px] ${
+          reverse ? 'scale-x-[-1]' : ''
+        }`}
         style={{
-          opacity: pressOpacity,
-          rotate: rotate,
+          rotate: -40 * amount,
           transformOrigin: '4% 40%',
-          scaleX: 1,
+          opacity: amount > 0.02 && amount < 0.96 ? 1 : 0.18,
         }}
-        className={`absolute left-[calc(50%-55px)] top-2 z-20 w-[130px] sm:left-[calc(50%-100px)] sm:top-[40px] sm:w-[200px] ${reverse ? 'scale-x-[-1]' : ''}`}
+        transition={{ type: 'spring', stiffness: 90, damping: 22 }}
       >
         <img
           src={machineImage}
-          alt="Coffee Maker"
+          alt="Espresso machine"
           className="h-[130px] w-[130px] -rotate-12 object-contain sm:h-[200px] sm:w-[200px]"
+          draggable={false}
         />
       </motion.div>
 
+      {/* Espresso stream: only visible during the pouring part of the story */}
       <motion.div
-        className="absolute left-[calc(50%-26px)] top-[90px] z-10 sm:left-[calc(50%-25px)] sm:top-[145px]"
+        className="absolute left-[calc(50%-20px)] top-[88px] z-10 origin-top sm:left-[calc(50%-25px)] sm:top-[145px]"
         style={{
-          opacity: pressOpacity,
-          transformOrigin: 'top center',
-          scaleY: getStreamScale(rotate),
+          opacity: streamOpacity,
+          scaleY: pourProgress,
         }}
       >
-        <svg className="h-[80px] w-[40px] sm:h-[120px] sm:w-[50px]" viewBox="0 0 50 260" preserveAspectRatio="none">
+        <svg
+          className="h-[90px] w-[40px] sm:h-[125px] sm:w-[50px]"
+          viewBox="0 0 50 260"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
           <defs>
-            {/* Coffee Body */}
-            <linearGradient id="coffeeBody" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#1d0e07" />
-              <stop offset="18%" stopColor="#4d250f" />
-              <stop offset="50%" stopColor="#c67b43" />
-              <stop offset="75%" stopColor="#6e3417" />
-              <stop offset="100%" stopColor="#1d0e07" />
+            <linearGradient id="espresso-stream-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#281006" />
+              <stop offset="28%" stopColor="#6b3518" />
+              <stop offset="52%" stopColor="#bd7941" />
+              <stop offset="74%" stopColor="#713719" />
+              <stop offset="100%" stopColor="#2a1007" />
             </linearGradient>
-
-            {/* Reflection */}
-            <linearGradient id="reflection" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="transparent" />
-              <stop offset="50%" stopColor="rgba(255,255,255,.55)" />
-              <stop offset="100%" stopColor="transparent" />
-            </linearGradient>
-
-            <filter id="coffeeShadow">
-              <feGaussianBlur stdDeviation="2" />
-            </filter>
           </defs>
-
-          {/* Main Flow */}
-          <>
-            {/* Body (main thick stream) */}
-            <motion.path d={path} fill="url(#coffeeBody)" opacity="0.95" />
-
-            {/* Thickness shadow (خیلی مهم) */}
-            <motion.path d={path} fill="#2a140a" opacity="0.35" transform="translate(1.8,0)" />
-
-            {/* Inner depth layer */}
-            <motion.path d={path} fill="#5a2c12" opacity="0.2" transform="translate(-0.8,0)" />
-          </>
-
-          {/* Gloss */}
           <motion.path
-            d="M22 10 C21 80 24 160 22 250"
-            stroke="white"
-            strokeWidth="3"
-            strokeLinecap="round"
-            opacity="0.45"
-            filter="url(#coffeeShadow)"
-            animate={{
-              x: [0, 1.5, -1, 0],
-            }}
-            transition={{
-              duration: 0.5,
-              repeat: Infinity,
-            }}
+            d="M21 0 C16 38 29 65 22 98 C16 132 29 159 22 194 C19 218 25 242 23 260 L31 260 C34 226 27 207 32 180 C39 143 27 119 32 88 C38 53 25 28 30 0 Z"
+            fill="url(#espresso-stream-gradient)"
+            animate={{ x: [0, 1.5, -1, 0] }}
+            transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
           />
-
-          {/* Edge Highlight */}
-          <motion.path
-            d="M28 0 C30 80 30 180 28 260"
-            stroke="#e0a06b"
-            strokeWidth="1"
-            opacity="0.35"
-            animate={{
-              opacity: [0.2, 0.4, 0.2],
-            }}
-            transition={{
-              duration: 0.8,
-              repeat: Infinity,
-            }}
+          <path
+            d="M25 8 C23 72 28 145 25 250"
+            stroke="#f2c18b"
+            strokeWidth="2"
+            strokeLinecap="round"
+            opacity="0.48"
           />
         </svg>
-
-        {/* Falling Droplets */}
       </motion.div>
 
-      {/* Coffee Stream */}
+      {/* Cup and rising espresso surface */}
+      <motion.div
+        className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[245px]"
+        animate={{
+          y: amount > 0.94 ? -26 : 0,
+          scale: amount > 0 && amount < 0.99 ? 1 : 0.98,
+        }}
+        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      >
+        <div className="relative w-[100px] sm:w-[200px]">
+          <img
+            src="/pic/cup.png"
+            alt="Coffee cup"
+            className="relative z-10 w-full object-contain"
+            draggable={false}
+          />
 
-      {/* Cup */}
-      <div className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[245px]">
-        <div
-          className={`relative w-[100px] transition-all duration-700 ease-out sm:w-[200px] ${
-            progress > 0 && progress < 0.99
-              ? reverse
-                ? 'scale-150 sm:translate-y-0 sm:scale-100'
-                : 'scale-150 sm:-translate-x-5 sm:translate-y-0 sm:scale-100'
-              : 'scale-150 sm:translate-y-[-70px]'
-          }`}
-        >
-          <img src="/pic/cup.png" alt="Cup" className="w-[200px]" />
-
+          {/* Keep the liquid clipped to the visible opening of the cup. */}
           <motion.div
-            className="absolute left-[24px] top-[24px] h-[12px] w-[50px] bg-[#4c2f1d] sm:left-[54px] sm:top-[48px] sm:h-[20px] sm:w-[90px]"
+            className="absolute left-[24px] top-[24px] z-20 h-[12px] w-[50px] overflow-hidden rounded-[50%] bg-[#4b2412] sm:left-[54px] sm:top-[48px] sm:h-[20px] sm:w-[90px]"
             style={{
-              opacity: surfaceOpacity,
+              opacity: coffeeLevel > 0 ? 1 : 0,
+              scaleY: Math.max(0.05, coffeeLevel),
+              transformOrigin: 'bottom center',
               clipPath: 'ellipse(50% 45% at 50% 50%)',
             }}
-          />
+          >
+            <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-[#c78b50] via-[#6b3518] to-[#2b1209]" />
+            <motion.div
+              className="absolute left-[18%] top-[18%] h-[2px] w-[35%] rounded-full bg-amber-100/50"
+              animate={{ x: [0, 5, 0], opacity: [0.25, 0.65, 0.25] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </motion.div>
         </div>
-        {progress > 0.98 && (
+
+        {/* Subtle steam appears once the pour is nearly complete. */}
+        {amount > 0.88 && (
           <motion.svg
-            className="absolute -top-20 sm:-top-[130px] sm:left-[50px]"
+            className="absolute -top-20 left-0 sm:-top-[130px] sm:left-[50px]"
             width="120"
             height="120"
             viewBox="0 0 120 120"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            aria-hidden="true"
           >
-            {[0, 1, 2].map((i) => {
-              const x = 40 + i * 15;
-
+            {[0, 1, 2].map((index) => {
+              const x = 40 + index * 15;
               return (
                 <motion.path
-                  key={i}
+                  key={index}
                   d={`M ${x} 100 C ${x - 10} 80, ${x + 10} 60, ${x} 30`}
-                  stroke="rgba(120, 90, 70, 0.45)"
+                  stroke="rgba(220, 205, 190, 0.58)"
                   strokeWidth="2"
-                  fill="transparent"
+                  fill="none"
                   strokeLinecap="round"
-                  animate={{
-                    y: [0, -20, -40],
-                    opacity: [0, 0.6, 0],
-                    pathLength: [0, 1, 1],
-                  }}
+                  animate={{ y: [0, -16, -32], opacity: [0, 0.65, 0] }}
                   transition={{
-                    duration: 2,
+                    duration: 2.1,
                     repeat: Infinity,
-                    delay: i * 0.3,
+                    delay: index * 0.35,
                     ease: 'easeOut',
                   }}
                 />
@@ -206,7 +152,7 @@ export default function CoffeeAnimation({ reverse, progress = 0, machineImage })
             })}
           </motion.svg>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }
