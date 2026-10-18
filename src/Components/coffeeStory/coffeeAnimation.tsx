@@ -26,7 +26,7 @@ export default function CoffeeAnimation({
       }`}
       aria-label="Coffee pouring into a cup"
     >
-      {/* Espresso machine */}
+      {/* Machine and pour stream share the same anchor so coffee starts at the outlet. */}
       <motion.div
         className={`absolute left-[calc(50%-55px)] top-2 z-20 w-[130px] sm:left-[calc(50%-100px)] sm:top-[40px] sm:w-[200px] ${
           reverse ? 'scale-x-[-1]' : ''
@@ -40,49 +40,51 @@ export default function CoffeeAnimation({
       >
         <img
           src={machineImage}
-          alt="Espresso machine"
+          alt="Coffee machine"
           className="h-[130px] w-[130px] -rotate-12 object-contain sm:h-[200px] sm:w-[200px]"
           draggable={false}
         />
-      </motion.div>
 
-      {/* Espresso stream: only visible during the pouring part of the story */}
-      <motion.div
-        className="absolute left-[calc(50%-20px)] top-[88px] z-10 origin-top sm:left-[calc(50%-25px)] sm:top-[145px]"
-        style={{
-          opacity: streamOpacity,
-          scaleY: pourProgress,
-        }}
-      >
-        <svg
-          className="h-[90px] w-[40px] sm:h-[125px] sm:w-[50px]"
-          viewBox="0 0 50 260"
-          preserveAspectRatio="none"
-          aria-hidden="true"
+        {/* The stream is attached to the lower outlet area, not the center of the canvas. */}
+        <motion.div
+          className="absolute left-[12%] top-[56%] z-10 origin-top"
+          style={{
+            opacity: streamOpacity,
+            scaleY: pourProgress,
+            // Counter the machine tilt so the espresso falls vertically.
+            rotate: 40 * amount,
+          }}
         >
-          <defs>
-            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#281006" />
-              <stop offset="28%" stopColor="#6b3518" />
-              <stop offset="52%" stopColor="#bd7941" />
-              <stop offset="74%" stopColor="#713719" />
-              <stop offset="100%" stopColor="#2a1007" />
-            </linearGradient>
-          </defs>
-          <motion.path
-            d="M21 0 C16 38 29 65 22 98 C16 132 29 159 22 194 C19 218 25 242 23 260 L31 260 C34 226 27 207 32 180 C39 143 27 119 32 88 C38 53 25 28 30 0 Z"
-            fill={`url(#${gradientId})`}
-            animate={{ x: [0, 1.5, -1, 0] }}
-            transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <path
-            d="M25 8 C23 72 28 145 25 250"
-            stroke="#f2c18b"
-            strokeWidth="2"
-            strokeLinecap="round"
-            opacity="0.48"
-          />
-        </svg>
+          <svg
+            className="h-[105px] w-[30px] sm:h-[145px] sm:w-[38px]"
+            viewBox="0 0 38 260"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#281006" />
+                <stop offset="28%" stopColor="#6b3518" />
+                <stop offset="52%" stopColor="#bd7941" />
+                <stop offset="74%" stopColor="#713719" />
+                <stop offset="100%" stopColor="#2a1007" />
+              </linearGradient>
+            </defs>
+            <motion.path
+              d="M14 0 C10 38 22 65 15 98 C10 132 22 159 15 194 C12 218 18 242 16 260 L23 260 C27 226 20 207 25 180 C32 143 20 119 25 88 C31 53 18 28 23 0 Z"
+              fill={`url(#${gradientId})`}
+              animate={{ x: [0, 1.2, -0.8, 0] }}
+              transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <path
+              d="M18 8 C16 72 21 145 18 250"
+              stroke="#f2c18b"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.48"
+            />
+          </svg>
+        </motion.div>
       </motion.div>
 
       {/* Cup and rising espresso surface */}
