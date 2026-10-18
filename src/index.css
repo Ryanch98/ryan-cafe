@@ -1,14 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   color-scheme: dark;
+  font-family: 'Inter', 'Vazirmatn', system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
   background: #020617;
+  --font-body: 'Inter', 'Vazirmatn', system-ui, sans-serif;
+  --font-persian: 'Vazirmatn', 'Inter', system-ui, sans-serif;
+  --text-body: 1rem;
+  --line-body: 1.65;
+  --control-height: 2.75rem;
+}
+
+:lang(fa),
+[dir='rtl'] {
+  font-family: var(--font-persian);
 }
 
 * {
@@ -20,6 +34,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 6rem;
   background: #020617;
+  font-size: 16px;
 }
 
 body,
@@ -32,9 +47,35 @@ body,
 body {
   overflow-x: clip;
   color: #f8fafc;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--line-body);
   background:
     radial-gradient(ellipse at 12% 0%, rgba(120, 53, 15, 0.12), transparent 38rem),
     #020617;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-block: 0;
+  font-family: inherit;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+p {
+  margin-block: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 button,
@@ -50,6 +91,17 @@ a {
   touch-action: manipulation;
 }
 
+button {
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  line-height: 1.5;
+}
+
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -62,6 +114,16 @@ select:focus-visible {
 ::selection {
   color: #020617;
   background: #fcd34d;
+}
+
+@media (max-width: 639px) {
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    line-height: 1.6;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
