@@ -104,6 +104,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                 className="home-ring-panel"
                 data-active={isActive}
                 aria-hidden={!isActive}
+                onMouseEnter={() => setActiveIndex(index)}
                 style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}
               >
                 <article className="home-ring-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl transition duration-300 hover:border-amber-300/30">
