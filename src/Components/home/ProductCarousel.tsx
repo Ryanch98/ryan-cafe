@@ -13,6 +13,7 @@ interface ProductCarouselProps {
 
 export default function ProductCarousel({ items, language }: ProductCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [pinnedIndex, setPinnedIndex] = useState<number | null>(null);
   const dragStartX = useRef<number | null>(null);
   const dragStartIndex = useRef(0);
   const dragMoved = useRef(false);
@@ -32,6 +33,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
 
   const step = useCallback((direction: number) => {
     setActiveIndex((current) => (current + direction + items.length) % items.length);
+    setPinnedIndex(null);
   }, [items.length]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -108,12 +110,19 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         .home-ring-stage img { -webkit-user-drag: none; }
         .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .home-ring-card { transform: perspective(900px) rotateX(0deg); transform-origin: 50% 0%; transition: transform 320ms ease, border-color 320ms ease; }
+        .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible, .home-ring-card:focus-within { transform: perspective(900px) rotateX(7deg) translateY(3px); }
+        .home-ring-pin { position: absolute; z-index: 5; left: 50%; top: -118px; width: min(280px, 90%); transform: translate(-50%, 12px); opacity: 0; pointer-events: none; transition: opacity 260ms ease, transform 320ms ease; }
+        .home-ring-panel[data-pinned="true"] .home-ring-pin, .home-ring-panel:focus-within .home-ring-pin { opacity: 1; transform: translate(-50%, 0); }
+        .home-ring-pin-label { position: relative; margin: 0 auto; max-width: 100%; border: 1px solid rgba(252,211,77,.32); border-radius: 14px; background: rgba(2,6,23,.96); padding: 10px 13px; color: rgba(255,255,255,.9); text-align: center; font-size: 12px; line-height: 1.55; box-shadow: 0 0 24px rgba(252,211,77,.12); }
+        .home-ring-pin-stem { display: block; width: 2px; height: 28px; margin: 0 auto; background: linear-gradient(to bottom, rgba(252,211,77,.9), rgba(252,211,77,.35)); }
+        .home-ring-pin-dot { display: block; width: 9px; height: 9px; margin: 0 auto; border-radius: 999px; background: #fcd34d; box-shadow: 0 0 0 4px rgba(252,211,77,.12), 0 0 18px rgba(252,211,77,.8); }
         .home-ring-carousel:focus-visible { outline: 2px solid #fcd34d; outline-offset: 5px; border-radius: 1rem; }
         @media (prefers-reduced-motion: reduce) {
           .home-ring { transform: none !important; transition: none !important; }
           .home-ring-panel { transform: none !important; opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
           .home-ring-panel[data-active="true"] { opacity: 1; pointer-events: auto; }
-          .home-ring-card, .home-ring-card * { transition: none !important; animation: none !important; }
+          .home-ring-card, .home-ring-card *, .home-ring-pin { transition: none !important; animation: none !important; }
         }
       `}</style>
 
@@ -143,10 +152,29 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                 key={item.id}
                 className="home-ring-panel"
                 data-active={isActive}
+                data-pinned={pinnedIndex === index}
                 aria-hidden={!isActive}
                 style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}
               >
-                <article className="home-ring-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl transition duration-300 hover:border-amber-300/30">
+                {description && (
+                  <div className="home-ring-pin" aria-live="polite">
+                    <p className="home-ring-pin-label">{description}</p>
+                    <span className="home-ring-pin-stem" aria-hidden="true" />
+                    <span className="home-ring-pin-dot" aria-hidden="true" />
+                  </div>
+                )}
+                <article
+                  className="home-ring-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl hover:border-amber-300/30"
+                  tabIndex={isActive ? 0 : -1}
+                  onClick={() => setPinnedIndex((current) => current === index ? null : index)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      setPinnedIndex((current) => current === index ? null : index);
+                    }
+                  }}
+                  aria-label={isRtl ? `نمایش توضیحات ${name}` : `Show description for ${name}`}
+                >
                   <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-white/[0.06] to-slate-900 p-3 sm:p-4">
                     {item.image ? (
                       <img
@@ -174,14 +202,9 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                         {formatPrice(item.price, language)}
                       </span>
                     </div>
-                    {description && (
-                      <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-white/60 sm:text-sm">
-                        {description}
-                      </p>
-                    )}
                     <button
                       type="button"
-                      onClick={() => dispatch(addToCart({ ...item, name, image: item.image ?? '' }))}
+                      onClick={(event) => { event.stopPropagation(); dispatch(addToCart({ ...item, name, image: item.image ?? '' })); }}
                       tabIndex={isActive ? 0 : -1}
                       className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:scale-[0.99]"
                       aria-label={isRtl ? `افزودن ${name} به سبد خرید` : `Add ${name} to cart`}
