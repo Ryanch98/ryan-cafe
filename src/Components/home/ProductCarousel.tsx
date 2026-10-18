@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { KeyboardEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import type { MenuItemContent, Language } from '../../constants/types';
 import { addToCart } from '../../redux/cartSlice';
 import formatPrice from '../../utils/formatPrice';
@@ -13,6 +13,9 @@ interface ProductCarouselProps {
 
 export default function ProductCarousel({ items, language }: ProductCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const dragStartX = useRef<number | null>(null);
+  const dragStartIndex = useRef(0);
+  const dragMoved = useRef(false);
   const cartQuantities = useAppSelector((state) =>
     state.cart.items.reduce<Record<string, number>>((acc, ci) => {
       acc[String(ci.id)] = ci.quantity;
@@ -30,6 +33,34 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const step = useCallback((direction: number) => {
     setActiveIndex((current) => (current + direction + items.length) % items.length);
   }, [items.length]);
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    dragStartX.current = event.clientX;
+    dragStartIndex.current = activeIndex;
+    dragMoved.current = false;
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (dragStartX.current === null || event.buttons !== 1) return;
+    const deltaX = event.clientX - dragStartX.current;
+    if (Math.abs(deltaX) > 8) dragMoved.current = true;
+    if (!dragMoved.current) return;
+    const steps = Math.round(-deltaX / 80);
+    setActiveIndex((dragStartIndex.current + steps % items.length + items.length) % items.length);
+  };
+
+  const handlePointerUp = () => {
+    dragStartX.current = null;
+  };
+
+  const handleClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (dragMoved.current) {
+      event.preventDefault();
+      event.stopPropagation();
+      dragMoved.current = false;
+    }
+  };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowRight') {
@@ -72,7 +103,9 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
       onKeyDown={handleKeyDown}
     >
       <style>{`
-        .home-ring-stage { perspective: 1200px; perspective-origin: 50% 42%; }
+        .home-ring-stage { perspective: 1200px; perspective-origin: 50% 42%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+        .home-ring-stage:active { cursor: grabbing; }
+        .home-ring-stage img { -webkit-user-drag: none; }
         .home-ring { position: relative; width: 250px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 250px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
         .home-ring-carousel:focus-visible { outline: 2px solid #fcd34d; outline-offset: 5px; border-radius: 1rem; }
@@ -84,7 +117,14 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         }
       `}</style>
 
-      <div className="home-ring-stage relative mx-auto h-[410px] w-full max-w-5xl sm:h-[450px]">
+      <div
+        className="home-ring-stage relative mx-auto h-[410px] w-full max-w-5xl sm:h-[450px]"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClickCapture={handleClickCapture}
+      >
         <div
           className="home-ring mx-auto"
           style={{ transform: `translateZ(-${radius}px) rotateY(${-activeIndex * angle}deg)` }}
@@ -104,7 +144,6 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                 className="home-ring-panel"
                 data-active={isActive}
                 aria-hidden={!isActive}
-                onMouseEnter={() => setActiveIndex(index)}
                 style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}
               >
                 <article className="home-ring-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl transition duration-300 hover:border-amber-300/30">
