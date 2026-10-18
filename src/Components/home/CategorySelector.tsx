@@ -90,6 +90,20 @@ export default function CategorySelector({
           pointer-events: none;
           transform: translate(0, 12px) scale(.48);
           transition: opacity 280ms ease, transform 440ms cubic-bezier(.2,.85,.2,1), border-color 250ms ease, background 250ms ease;
+          animation: menu-blob-morph 9s ease-in-out infinite, menu-blob-turn 7s ease-in-out infinite;
+        }
+        .menu-orbit-root .menu-orbit-category:nth-child(1) { animation-delay: -2s, -1s; }
+        .menu-orbit-root .menu-orbit-category:nth-child(2) { animation-delay: -5s, -3s; }
+        .menu-orbit-root .menu-orbit-category:nth-child(3) { animation-delay: -7s, -5s; }
+        @keyframes menu-blob-morph {
+          0%, 100% { border-radius: 48% 52% 58% 42% / 43% 46% 54% 57%; }
+          25% { border-radius: 58% 42% 44% 56% / 50% 58% 42% 50%; }
+          50% { border-radius: 43% 57% 52% 48% / 58% 42% 56% 44%; }
+          75% { border-radius: 54% 46% 39% 61% / 45% 55% 45% 55%; }
+        }
+        @keyframes menu-blob-turn {
+          0%, 100% { rotate: -2deg; }
+          50% { rotate: 2deg; }
         }
         .menu-orbit-root .menu-orbit-drinks { left: 2px; top: 96px; }
         .menu-orbit-root .menu-orbit-foods { left: 50%; top: 0; }
@@ -153,6 +167,7 @@ export default function CategorySelector({
           .menu-orbit-root .menu-orbit-main,
           .menu-orbit-root .menu-orbit-category,
           .menu-orbit-root .menu-orbit-goo span { transition: none !important; }
+          .menu-orbit-root .menu-orbit-category { animation: none !important; rotate: 0deg !important; }
         }
       `}</style>
 
