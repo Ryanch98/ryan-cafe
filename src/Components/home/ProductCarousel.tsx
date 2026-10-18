@@ -14,6 +14,7 @@ interface ProductCarouselProps {
 export default function ProductCarousel({ items, language }: ProductCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [pinnedIndex, setPinnedIndex] = useState<number | null>(null);
+  const [typedDescription, setTypedDescription] = useState('');
   const dragStartX = useRef<number | null>(null);
   const dragStartIndex = useRef(0);
   const dragMoved = useRef(false);
@@ -29,7 +30,27 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
 
   useEffect(() => {
     setActiveIndex(0);
+    setPinnedIndex(null);
   }, [items]);
+
+  const pinnedItem = pinnedIndex === null ? null : items[pinnedIndex];
+  const pinnedDescription = pinnedItem
+    ? (typeof pinnedItem.description === 'object'
+        ? pinnedItem.description[language] || pinnedItem.description.en
+        : pinnedItem.description) || ''
+    : '';
+
+  useEffect(() => {
+    setTypedDescription('');
+    if (pinnedIndex === null || !pinnedDescription) return;
+    let position = 0;
+    const timer = window.setInterval(() => {
+      position += 1;
+      setTypedDescription(pinnedDescription.slice(0, position));
+      if (position >= pinnedDescription.length) window.clearInterval(timer);
+    }, 22);
+    return () => window.clearInterval(timer);
+  }, [pinnedIndex, pinnedDescription]);
 
   const step = useCallback((direction: number) => {
     setActiveIndex((current) => (current + direction + items.length) % items.length);
@@ -111,7 +132,10 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
         .home-ring-card { transform: perspective(900px) rotateX(0deg); transform-origin: 50% 0%; transition: transform 320ms ease, border-color 320ms ease; }
-        .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible, .home-ring-card:focus-within { transform: perspective(900px) rotateX(7deg) translateY(3px); }
+        .home-ring-panel[data-pinned="true"] .home-ring-card, .home-ring-card:focus-visible, .home-ring-card:focus-within { transform: perspective(900px) rotateX(16deg) translateY(5px); }
+        .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel:not([data-pinned="true"]) { filter: blur(5px); opacity: .22; transition: filter 300ms ease, opacity 300ms ease; }
+        .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel[data-pinned="true"] { z-index: 10; }
+        .home-ring-pin-label { min-height: 58px; }
         .home-ring-pin { position: absolute; z-index: 5; left: 50%; top: -118px; width: min(280px, 90%); transform: translate(-50%, 12px); opacity: 0; pointer-events: none; transition: opacity 260ms ease, transform 320ms ease; }
         .home-ring-panel[data-pinned="true"] .home-ring-pin, .home-ring-panel:focus-within .home-ring-pin { opacity: 1; transform: translate(-50%, 0); }
         .home-ring-pin-label { position: relative; margin: 0 auto; max-width: 100%; border: 1px solid rgba(252,211,77,.32); border-radius: 14px; background: rgba(2,6,23,.96); padding: 10px 13px; color: rgba(255,255,255,.9); text-align: center; font-size: 12px; line-height: 1.55; box-shadow: 0 0 24px rgba(252,211,77,.12); }
@@ -123,6 +147,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
           .home-ring-panel { transform: none !important; opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
           .home-ring-panel[data-active="true"] { opacity: 1; pointer-events: auto; }
           .home-ring-card, .home-ring-card *, .home-ring-pin { transition: none !important; animation: none !important; }
+          .home-ring-stage:has(.home-ring-panel[data-pinned="true"]) .home-ring-panel:not([data-pinned="true"]) { filter: none; opacity: 1; }
         }
       `}</style>
 
@@ -158,7 +183,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
               >
                 {description && (
                   <div className="home-ring-pin" aria-live="polite">
-                    <p className="home-ring-pin-label">{description}</p>
+                    <p className="home-ring-pin-label">{pinnedIndex === index ? typedDescription : description}</p>
                     <span className="home-ring-pin-stem" aria-hidden="true" />
                     <span className="home-ring-pin-dot" aria-hidden="true" />
                   </div>
