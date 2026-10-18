@@ -1,7 +1,6 @@
 import { useId } from 'react';
 
 interface CoffeeAnimationProps {
-  reverse: boolean;
   progress?: number;
   machineImage: string;
 }
@@ -41,7 +40,6 @@ function getPourLayout(image: string): PourLayout {
 }
 
 export default function CoffeeAnimation({
-  reverse,
   progress = 0,
   machineImage,
 }: CoffeeAnimationProps) {
