@@ -222,10 +222,14 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                 <article
                   className="home-ring-card group flex w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950/90 text-white shadow-2xl shadow-black/30 backdrop-blur-xl hover:border-amber-300/30"
                   tabIndex={isActive ? 0 : -1}
-                  onClick={() => setPinnedIndex((current) => current === index ? null : index)}
+                  onClick={() => {
+                    if (index !== activeIndex) return;
+                    setPinnedIndex((current) => current === index ? null : index);
+                  }}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' || event.key === ' ') {
                       event.preventDefault();
+                      if (index !== activeIndex) return;
                       setPinnedIndex((current) => current === index ? null : index);
                     }
                   }}
