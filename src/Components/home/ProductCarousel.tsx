@@ -112,7 +112,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const angle = items.length ? 360 / items.length : 0;
   const radius = useMemo(() => {
     if (items.length < 2) return 0;
-    const cardWidth = isSmallScreen ? 220 : 320;
+    const cardWidth = isSmallScreen ? 270 : 320;
     return Math.max(185, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length))));
   }, [items.length, isSmallScreen]);
 
@@ -147,13 +147,13 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         .home-ring { position: relative; width: 320px; height: 100%; transform-style: preserve-3d; transition: transform 750ms cubic-bezier(.2,.75,.2,1); }
         .home-ring-panel { position: absolute; inset: 0; width: 320px; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
         @media (max-width: 639px) {
-          .home-ring, .home-ring-panel { width: 220px; }
-          .home-ring-card > div:first-child { padding: 8px; }
-          .home-ring-card > div:first-child { aspect-ratio: 5 / 3; }
-          .home-ring-card > div:first-child img { padding: 4px; border-radius: 14px; }
-          .home-ring-card > div:nth-child(2) { padding: 10px; }
-          .home-ring-card h2 { font-size: 14px; line-height: 1.25rem; }
-          .home-ring-card button { min-height: 38px; margin-top: 10px; padding: 8px 10px; font-size: 12px; }
+          .home-ring, .home-ring-panel { width: 270px; }
+          .home-ring-card > div:first-child { padding: 10px; }
+          .home-ring-card > div:first-child { aspect-ratio: 4 / 3; }
+          .home-ring-card > div:first-child img { padding: 5px; border-radius: 14px; }
+          .home-ring-card > div:nth-child(2) { padding: 14px; }
+          .home-ring-card h2 { font-size: 15px; line-height: 1.4rem; }
+          .home-ring-card button { min-height: 42px; margin-top: 12px; padding: 9px 12px; font-size: 13px; }
           .home-ring-panel[data-nearby="false"] { opacity: 0; pointer-events: none; }
         }
         .home-ring-card { transform: perspective(900px) rotateX(0deg); transform-origin: 50% 0%; transition: transform 320ms ease, border-color 320ms ease; }
@@ -177,7 +177,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
       `}</style>
 
       <div
-        className={`home-ring-stage relative mx-auto h-[410px] w-full max-w-6xl sm:h-[430px] ${pinnedIndex !== null ? 'z-[50]' : ''}`}
+        className={`home-ring-stage relative mx-auto h-[470px] w-full max-w-6xl sm:h-[430px] ${pinnedIndex !== null ? 'z-[50]' : ''}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
