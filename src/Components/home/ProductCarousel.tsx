@@ -113,7 +113,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const radius = useMemo(() => {
     if (items.length < 2) return 0;
     const cardWidth = isSmallScreen ? 270 : 320;
-    return Math.max(185, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length))));
+    return Math.max(210, Math.round((cardWidth / (2 * Math.tan(Math.PI / items.length))) + 28));
   }, [items.length, isSmallScreen]);
 
   if (!items.length) {
