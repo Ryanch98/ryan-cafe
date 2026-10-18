@@ -204,10 +204,6 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
           {items.map((item, index) => {
             const quantity = cartQuantities[String(item.id)] ?? 0;
             const name = item.name[language] || item.name.en;
-            const description =
-              typeof item.description === 'object'
-                ? item.description[language] || item.description.en
-                : item.description;
             const isActive = index === activeIndex;
 
             return (
