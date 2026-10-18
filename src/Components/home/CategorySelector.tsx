@@ -107,7 +107,7 @@ export default function CategorySelector({
             type="button"
             aria-expanded={isOpen}
             aria-controls="home-menu-categories"
-            onClick={() => setIsOpen((open) => !open)}
+            onClick={() => setIsOpen(true)}
             className="relative z-10 rounded-full border border-amber-300/30 bg-slate-950/90 px-8 py-3 text-xl font-black tracking-[0.18em] text-amber-200 shadow-lg shadow-amber-950/20 transition hover:border-amber-200/70 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:text-2xl"
           >
             {isRTL ? 'منو' : 'Menu'}
