@@ -49,7 +49,9 @@ export default function CoffeeAnimation({
         const p = gsap.utils.clamp(0, 1, rawProgress);
         const tilt = reverse ? 40 * p : -40 * p;
         const pour = gsap.utils.clamp(0, 1, (p - 0.12) / 0.68);
-        const streamOpacity = p > 0.12 && p < 0.86 ? 1 : 0;
+        const streamFadeIn = gsap.utils.clamp(0, 1, (p - 0.08) / 0.08);
+        const streamFadeOut = gsap.utils.clamp(0, 1, (0.92 - p) / 0.06);
+        const streamOpacity = Math.min(streamFadeIn, streamFadeOut);
         const coffeeLevel = gsap.utils.clamp(0, 1, (p - 0.35) / 0.58);
         const set = reduceMotion ? gsap.set : gsap.to;
         const duration = reduceMotion ? 0 : 0.08;
