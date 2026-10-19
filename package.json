@@ -16,7 +16,8 @@
     "react-scripts": "5.0.1",
     "swiper": "^14.0.2",
     "tailwind-scrollbar-hide": "^4.0.0",
-    "workbox-webpack-plugin": "^7.4.1"
+    "workbox-webpack-plugin": "^7.4.1",
+    "gsap": "^3.13.0"
   },
   "optionalDependencies": {
     "firebase": "^9.23.0"
