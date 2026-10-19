@@ -57,9 +57,10 @@ export default function CoffeeAnimation({
     if (!image.complete || image.naturalWidth === 0) return;
 
     const sceneBox = scene.getBoundingClientRect();
-    const imageBox = image.getBoundingClientRect();
+    const imageWidth = image.offsetWidth;
+    const imageHeight = image.offsetHeight;
     const cupBox = cup.getBoundingClientRect();
-    if (!sceneBox.width || !sceneBox.height || !imageBox.width || !cupBox.width) return;
+    if (!sceneBox.width || !sceneBox.height || !imageWidth || !imageHeight || !cupBox.width) return;
 
     // The outlet anchor is expressed in the image's own coordinate system, then
     // rotated around the actual wrapper transform-origin. This avoids positioning
@@ -70,8 +71,8 @@ export default function CoffeeAnimation({
     const pressHeight = press.offsetHeight;
     const originX = reverse ? pressWidth * 0.96 : pressWidth * 0.04;
     const originY = pressHeight * 0.4;
-    const localX = imageBox.width * (reverse ? 0.88 : 0.12);
-    const localY = imageBox.height * 0.56;
+    const localX = imageWidth * (reverse ? 0.88 : 0.12);
+    const localY = imageHeight * 0.56;
     const dx = localX - originX;
     const dy = localY - originY;
     const rotatedX = originX + dx * Math.cos(angle) - dy * Math.sin(angle);
