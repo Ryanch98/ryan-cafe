@@ -116,7 +116,7 @@ export default function CoffeeAnimation({
         />
         <svg
           ref={streamRef}
-          className={`absolute top-[56%] z-10 h-[105px] w-[30px] sm:h-[145px] sm:w-[38px] ${reverse ? 'right-[12%]' : 'left-[12%]'}`}
+          className={`absolute top-[56%] z-10 h-[128px] w-[30px] sm:h-[145px] sm:w-[38px] ${reverse ? 'right-[12%]' : 'left-[12%]'}`}
           viewBox="0 0 38 260"
           preserveAspectRatio="none"
           aria-hidden="true"
