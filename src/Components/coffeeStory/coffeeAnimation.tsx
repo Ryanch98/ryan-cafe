@@ -26,7 +26,7 @@ export default function CoffeeAnimation({
   const reduceMotion = useReducedMotion();
   const amount = Math.min(1, Math.max(0, progress));
   const pourProgress = reduceMotion ? (amount > 0.12 && amount < 0.86 ? 1 : 0) : Math.min(1, Math.max(0, (amount - 0.12) / 0.68));
-  const streamOpacity = amount > 0.12 && amount < 0.86 ? 1 : 0;
+  const streamOpacity = Math.min(1, Math.max(0, (amount - 0.1) / 0.04)) * Math.min(1, Math.max(0, (0.9 - amount) / 0.04));
   const coffeeLevel = Math.min(1, Math.max(0, (amount - 0.35) / 0.58));
 
   const measureStream = useCallback(() => {
@@ -124,11 +124,11 @@ export default function CoffeeAnimation({
           opacity: amount > 0.02 && amount < 0.96 ? 1 : 0.18,
         }}
       >
-        <div className="relative h-[130px] w-[130px] sm:h-[200px] sm:w-[200px]">
+        <div className="relative h-[130px] w-[130px] -rotate-12 sm:h-[200px] sm:w-[200px]">
           <img
             src={machineImage}
             alt="French press"
-            className="h-full w-full -rotate-12 object-contain"
+            className="h-full w-full object-contain"
             draggable={false}
             onLoad={measureStream}
           />
