@@ -4,7 +4,12 @@ import type { MenuItemContent, Language } from '../../constants/types';
 import { addToCart } from '../../redux/cartSlice';
 import formatPrice from '../../utils/formatPrice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { ShoppingBagIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import {
+  ShoppingBagIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/24/outline';
 
 interface ProductCarouselProps {
   items: MenuItemContent[];
@@ -60,10 +65,13 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
     return () => window.clearInterval(timer);
   }, [pinnedIndex, pinnedDescription]);
 
-  const step = useCallback((direction: number) => {
-    setActiveIndex((current) => (current + direction + items.length) % items.length);
-    setPinnedIndex(null);
-  }, [items.length]);
+  const step = useCallback(
+    (direction: number) => {
+      setActiveIndex((current) => (current + direction + items.length) % items.length);
+      setPinnedIndex(null);
+    },
+    [items.length],
+  );
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) return;
@@ -78,7 +86,7 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
     if (Math.abs(deltaX) > 8) dragMoved.current = true;
     if (!dragMoved.current) return;
     const steps = Math.round(-deltaX / 80);
-    setActiveIndex((dragStartIndex.current + steps % items.length + items.length) % items.length);
+    setActiveIndex((dragStartIndex.current + (steps % items.length) + items.length) % items.length);
   };
 
   const handlePointerUp = () => {
@@ -113,13 +121,15 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
   const radius = useMemo(() => {
     if (items.length < 2) return 0;
     const cardWidth = isSmallScreen ? 270 : 320;
-    return Math.max(210, Math.round((cardWidth / (2 * Math.tan(Math.PI / items.length))) + 28));
+    return Math.max(210, Math.round(cardWidth / (2 * Math.tan(Math.PI / items.length)) + 28));
   }, [items.length, isSmallScreen]);
 
   if (!items.length) {
     return (
       <div className="mx-auto flex min-h-48 w-full max-w-xl items-center justify-center px-6 text-center text-sm text-white/70">
-        {isRtl ? 'در این دسته هنوز محصولی وجود ندارد.' : 'No products are available in this category yet.'}
+        {isRtl
+          ? 'در این دسته هنوز محصولی وجود ندارد.'
+          : 'No products are available in this category yet.'}
       </div>
     );
   }
@@ -177,15 +187,18 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
       `}</style>
 
       {pinnedIndex !== null && pinnedDescription && (
-        <div
-          className="relative z-[70] mx-auto mb-3 w-full max-w-sm px-3"
-          aria-live="polite"
-        >
+        <div className="relative z-[70] mx-auto mb-3 w-full max-w-sm px-3" aria-live="polite">
           <div className="rounded-2xl border border-amber-300/30 bg-slate-950/95 px-4 py-3 text-center text-sm leading-6 text-white shadow-2xl shadow-black/40">
             {typedDescription || pinnedDescription.slice(0, 1)}
           </div>
-          <span className="mx-auto block h-5 w-0.5 bg-gradient-to-b from-amber-300 to-amber-300/30" aria-hidden="true" />
-          <span className="mx-auto block h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,.8)]" aria-hidden="true" />
+          <span
+            className="mx-auto block h-5 w-0.5 bg-gradient-to-b from-amber-300 to-amber-300/30"
+            aria-hidden="true"
+          />
+          <span
+            className="mx-auto block h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,.8)]"
+            aria-hidden="true"
+          />
         </div>
       )}
 
@@ -224,13 +237,13 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => {
                     if (index !== activeIndex) return;
-                    setPinnedIndex((current) => current === index ? null : index);
+                    setPinnedIndex((current) => (current === index ? null : index));
                   }}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' || event.key === ' ') {
                       event.preventDefault();
                       if (index !== activeIndex) return;
-                      setPinnedIndex((current) => current === index ? null : index);
+                      setPinnedIndex((current) => (current === index ? null : index));
                     }
                   }}
                   aria-label={isRtl ? `نمایش توضیحات ${name}` : `Show description for ${name}`}
@@ -256,16 +269,23 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
                       </span>
                     )}
                   </div>
-                  <div className={`flex flex-1 flex-col p-4 sm:p-5 ${isRtl ? 'text-right' : 'text-left'}`}>
+                  <div
+                    className={`flex flex-1 flex-col p-4 sm:p-5 ${isRtl ? 'text-right' : 'text-left'}`}
+                  >
                     <div className="flex items-start justify-between gap-3">
-                      <h2 className="text-base font-semibold leading-6 text-white sm:text-lg">{name}</h2>
+                      <h2 className="text-base font-semibold leading-6 text-white sm:text-lg">
+                        {name}
+                      </h2>
                       <span className="shrink-0 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs font-semibold text-amber-200">
                         {formatPrice(item.price, language)}
                       </span>
                     </div>
                     <button
                       type="button"
-                      onClick={(event) => { event.stopPropagation(); dispatch(addToCart({ ...item, name, image: item.image ?? '' })); }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        dispatch(addToCart({ ...item, name, image: item.image ?? '' }));
+                      }}
                       tabIndex={isActive ? 0 : -1}
                       className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:scale-[0.99]"
                       aria-label={isRtl ? `افزودن ${name} به سبد خرید` : `Add ${name} to cart`}
@@ -281,14 +301,20 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
         </div>
       </div>
 
-      <div className={`relative mx-auto flex max-w-5xl items-center justify-center gap-5 pb-3 pt-2 text-white ${pinnedIndex !== null ? 'z-[50]' : ''}`}>
+      <div
+        className={`relative mx-auto flex max-w-5xl items-center justify-center gap-5 pb-3 pt-2 text-white ${pinnedIndex !== null ? 'z-[50]' : ''}`}
+      >
         <button
           type="button"
           onClick={() => step(isRtl ? 1 : -1)}
           className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition hover:border-amber-300/60 hover:bg-amber-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
           aria-label={isRtl ? 'محصول قبلی' : 'Previous product'}
         >
-          {isRtl ? <ChevronRightIcon className="h-5 w-5" /> : <ChevronLeftIcon className="h-5 w-5" />}
+          {isRtl ? (
+            <ChevronRightIcon className="h-5 w-5" />
+          ) : (
+            <ChevronLeftIcon className="h-5 w-5" />
+          )}
         </button>
         <p className="min-w-24 text-center text-xs font-medium text-white/65" aria-hidden="true">
           <span className="text-amber-200">{activeIndex + 1}</span> / {items.length}
@@ -299,7 +325,11 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
           className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition hover:border-amber-300/60 hover:bg-amber-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
           aria-label={isRtl ? 'محصول بعدی' : 'Next product'}
         >
-          {isRtl ? <ChevronLeftIcon className="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
+          {isRtl ? (
+            <ChevronLeftIcon className="h-5 w-5" />
+          ) : (
+            <ChevronRightIcon className="h-5 w-5" />
+          )}
         </button>
       </div>
       <p className="sr-only" aria-live="polite" aria-atomic="true">
@@ -308,7 +338,9 @@ export default function ProductCarousel({ items, language }: ProductCarouselProp
           : `Product ${activeIndex + 1} of ${items.length}: ${activeItem?.name[language] || activeItem?.name.en || ''}`}
       </p>
       <p className="sr-only">
-        {isRtl ? 'برای جابه‌جایی از کلیدهای جهت‌دار استفاده کنید.' : 'Use the arrow keys to navigate products. Home goes to the first product; End goes to the last.'}
+        {isRtl
+          ? 'برای جابه‌جایی از کلیدهای جهت‌دار استفاده کنید.'
+          : 'Use the arrow keys to navigate products. Home goes to the first product; End goes to the last.'}
       </p>
     </section>
   );
