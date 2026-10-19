@@ -21,6 +21,8 @@ export default function CoffeeAnimation({
   const coffeeRef = useRef<HTMLDivElement>(null);
   const steamRef = useRef<SVGSVGElement>(null);
   const updateProgressRef = useRef<(value: number) => void>(() => undefined);
+  const latestProgressRef = useRef(progress);
+  latestProgressRef.current = progress;
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -83,7 +85,7 @@ export default function CoffeeAnimation({
       };
     }, scene);
 
-    observer = new ResizeObserver(() => updateProgressRef.current(progress));
+    observer = new ResizeObserver(() => updateProgressRef.current(latestProgressRef.current));
     observer.observe(scene);
     updateProgressRef.current(progress);
 
@@ -95,6 +97,7 @@ export default function CoffeeAnimation({
   }, [reverse, machineImage]);
 
   useEffect(() => {
+    latestProgressRef.current = progress;
     updateProgressRef.current(progress);
   }, [progress]);
 
