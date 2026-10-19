@@ -28,6 +28,7 @@ export default function CoffeeAnimation({
   const pressRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const cupRef = useRef<HTMLDivElement>(null);
+  const streamSvgRef = useRef<SVGSVGElement>(null);
   const streamPathRef = useRef<SVGPathElement>(null);
   const streamHighlightRef = useRef<SVGPathElement>(null);
   const streamRevealRef = useRef<SVGRectElement>(null);
@@ -44,6 +45,7 @@ export default function CoffeeAnimation({
     const press = pressRef.current;
     const image = imageRef.current;
     const cup = cupRef.current;
+    const streamSvg = streamSvgRef.current;
     const path = streamPathRef.current;
     const highlight = streamHighlightRef.current;
     const reveal = streamRevealRef.current;
@@ -51,12 +53,11 @@ export default function CoffeeAnimation({
     const coffee = coffeeRef.current;
     const steam = steamRef.current;
 
-    if (!scene || !press || !image || !cup || !path || !highlight || !reveal || !group || !coffee) return;
+    if (!scene || !press || !image || !cup || !streamSvg || !path || !highlight || !reveal || !group || !coffee) return;
     if (!image.complete || image.naturalWidth === 0) return;
 
     const sceneBox = scene.getBoundingClientRect();
     const imageBox = image.getBoundingClientRect();
-    const pressBox = press.getBoundingClientRect();
     const cupBox = cup.getBoundingClientRect();
     if (!sceneBox.width || !sceneBox.height || !imageBox.width || !cupBox.width) return;
 
@@ -65,20 +66,23 @@ export default function CoffeeAnimation({
     // the stream with viewport-specific pixel offsets.
     const p = gsap.utils.clamp(0, 1, latestProgressRef.current);
     const angle = (reverse ? 40 : -40) * p * Math.PI / 180;
-    const originX = reverse ? pressBox.width * 0.96 : pressBox.width * 0.04;
-    const originY = pressBox.height * 0.4;
+    const pressWidth = press.offsetWidth;
+    const pressHeight = press.offsetHeight;
+    const originX = reverse ? pressWidth * 0.96 : pressWidth * 0.04;
+    const originY = pressHeight * 0.4;
     const localX = imageBox.width * (reverse ? 0.88 : 0.12);
     const localY = imageBox.height * 0.56;
     const dx = localX - originX;
     const dy = localY - originY;
     const rotatedX = originX + dx * Math.cos(angle) - dy * Math.sin(angle);
     const rotatedY = originY + dx * Math.sin(angle) + dy * Math.cos(angle);
-    const sourceX = pressBox.left - sceneBox.left + (reverse ? pressBox.width - rotatedX : rotatedX);
-    const sourceY = pressBox.top - sceneBox.top + rotatedY;
+    const sourceX = press.offsetLeft + rotatedX;
+    const sourceY = press.offsetTop + rotatedY;
+    streamSvg.setAttribute('viewBox', `0 0 ${sceneBox.width} ${sceneBox.height}`);
 
     // Target the centre of the visible cup opening, not the cup container edge.
-    const targetX = cupBox.left - sceneBox.left + cupBox.width * 0.5;
-    const targetY = cupBox.top - sceneBox.top + Math.min(cupBox.width * 0.28, 56);
+    const targetX = cup.offsetLeft + cup.offsetWidth * 0.5;
+    const targetY = cup.offsetTop + Math.min(cup.offsetWidth * 0.28, 56);
 
     const vx = targetX - sourceX;
     const vy = targetY - sourceY;
@@ -113,7 +117,7 @@ export default function CoffeeAnimation({
 
     // Clip the same continuous path from the spout downward; scroll reversal
     // simply moves the reveal boundary back up the curve.
-    gsap.set(reveal, { attr: { x: 0, y: 0, width: sceneBox.width, height: distance * pour + 2 } });
+    gsap.set(reveal, { attr: { x: 0, y: 0, width: sceneBox.width, height: pour > 0 ? sourceY + distance * pour + 2 : 0 } });
     gsap.set(group, { autoAlpha: opacity });
     gsap.set(coffee, {
       scaleY: Math.max(0.03, coffeeLevel),
@@ -199,6 +203,7 @@ export default function CoffeeAnimation({
       </div>
 
       <svg
+        ref={streamSvgRef}
         className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
