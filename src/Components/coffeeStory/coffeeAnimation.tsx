@@ -48,7 +48,7 @@ export default function CoffeeAnimation({
     const bend = Math.min(22, Math.abs(x2 - x1) * 0.16 + distance * 0.035) * (reverse ? -1 : 1);
     const path = `M ${x1} ${y1} C ${x1 + bend} ${y1 + distance * 0.34}, ${x2 - bend} ${y1 + distance * 0.72}, ${x2} ${y2}`;
     setGeometry({ width: sceneRect.width, height: sceneRect.height, path });
-  }, [reverse, amount, machineImage]);
+  }, [reverse, machineImage]);
 
   useLayoutEffect(() => {
     measureStream();
