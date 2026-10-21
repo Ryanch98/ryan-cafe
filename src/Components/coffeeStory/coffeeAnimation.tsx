@@ -28,26 +28,28 @@ export default function CoffeeAnimation({
     >
       {/* Machine and pour stream share the same anchor so coffee starts at the outlet. */}
       <motion.div
-        className={`absolute left-[calc(50%-55px)] top-2 z-20 w-[130px] sm:left-[calc(50%-100px)] sm:top-[40px] sm:w-[200px] ${
+        className={`absolute left-[35%] top-2 z-20 w-[130px] sm:left-[calc(70%-100px)] sm:top-[120px] sm:w-[200px] ${
           reverse ? 'scale-x-[-1]' : ''
         }`}
         style={{
           rotate: -40 * amount,
           transformOrigin: '4% 40%',
-          opacity: amount > 0.02 && amount < 0.96 ? 1 : 0.18,
+          opacity: amount < 0.94 ? 1 : 0,
         }}
         transition={{ type: 'spring', stiffness: 90, damping: 22 }}
       >
         <img
           src={machineImage}
           alt="Coffee machine"
-          className="h-[130px] w-[130px] -rotate-12 object-contain sm:h-[200px] sm:w-[200px]"
+          className={
+            'ml-10 mt-0 -rotate-12 scale-125 sm:ml-20 sm:mt-4 sm:max-h-[180px] sm:w-[200px]'
+          }
           draggable={false}
         />
 
         {/* The stream is attached to the lower outlet area, not the center of the canvas. */}
         <motion.div
-          className="absolute left-[12%] top-[56%] z-10 origin-top"
+          className="absolute left-[25%] top-[35%] z-10 origin-top-left sm:left-[40%] sm:top-[35%]"
           style={{
             opacity: streamOpacity,
             scaleY: pourProgress,
@@ -56,7 +58,7 @@ export default function CoffeeAnimation({
           }}
         >
           <svg
-            className="h-[105px] w-[30px] sm:h-[145px] sm:w-[38px]"
+            className="h-[40px] w-[30px] sm:h-[80px] sm:w-[38px]"
             viewBox="0 0 38 260"
             preserveAspectRatio="none"
             aria-hidden="true"
@@ -89,14 +91,14 @@ export default function CoffeeAnimation({
 
       {/* Cup and rising espresso surface */}
       <motion.div
-        className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[245px]"
+        className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[1/2]"
         animate={{
           y: amount > 0.94 ? -26 : 0,
           scale: amount > 0 && amount < 0.99 ? 1 : 0.98,
         }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       >
-        <div className="relative w-[100px] sm:w-[200px]">
+        <div className="relative bottom-0 left-1/2 w-[180px] -translate-x-[70%] translate-y-[-160px] sm:bottom-5 sm:w-[250px] sm:-translate-x-[57%] sm:translate-y-0">
           <img
             src="/pic/cup.png"
             alt="Coffee cup"
@@ -106,7 +108,7 @@ export default function CoffeeAnimation({
 
           {/* Keep the liquid clipped to the visible opening of the cup. */}
           <motion.div
-            className="absolute left-[24px] top-[24px] z-20 h-[12px] w-[50px] overflow-hidden rounded-[50%] bg-[#4b2412] sm:left-[54px] sm:top-[48px] sm:h-[20px] sm:w-[90px]"
+            className="absolute left-[49px] top-[46px] z-20 h-[12px] w-[82px] overflow-hidden rounded-[50%] bg-[#4b2412] sm:left-[27%] sm:top-[60px] sm:h-[20px] sm:w-[115px]"
             style={{
               opacity: coffeeLevel > 0 ? 1 : 0,
               scaleY: Math.max(0.05, coffeeLevel),
@@ -126,7 +128,7 @@ export default function CoffeeAnimation({
         {/* Subtle steam appears once the pour is nearly complete. */}
         {amount > 0.88 && (
           <motion.svg
-            className="absolute -top-20 left-0 sm:-top-[130px] sm:left-[50px]"
+            className="absolute -top-52 left-0 sm:-top-[50px] sm:left-[54px]"
             width="120"
             height="120"
             viewBox="0 0 120 120"
@@ -140,8 +142,8 @@ export default function CoffeeAnimation({
                 <motion.path
                   key={index}
                   d={`M ${x} 100 C ${x - 10} 80, ${x + 10} 60, ${x} 30`}
-                  stroke="rgba(220, 205, 190, 0.58)"
-                  strokeWidth="2"
+                  stroke="rgba(220, 205, 190, 0.9)"
+                  strokeWidth="2.8"
                   fill="none"
                   strokeLinecap="round"
                   animate={{ y: [0, -16, -32], opacity: [0, 0.65, 0] }}

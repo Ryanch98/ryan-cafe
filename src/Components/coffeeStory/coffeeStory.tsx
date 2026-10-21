@@ -37,7 +37,7 @@ export default function CoffeeStory() {
     {
       title: translations[language].coffeeNames.Espresso,
       descriptionKey: 'EspressoCoffeeDescription',
-      image: '/pic/mocapot.png',
+      image: '/pic/mokapot.png',
       reverse: false,
     },
   ];
