@@ -19,6 +19,21 @@ export default function CoffeeAnimation({
   const streamOpacity = amount > 0.12 && amount < 0.86 ? 1 : 0;
   const coffeeLevel = Math.min(1, Math.max(0, (amount - 0.35) / 0.58));
 
+  // Use a consistent image frame while tuning the visible device size by silhouette.
+  // The moka pot needs a little more room than the tall, narrow French press.
+  const isMokaPot = machineImage.includes('mocapot');
+  const isTurkishPot = machineImage.includes('turkish');
+  const machineFrameClass = isMokaPot
+    ? 'left-[calc(50%-75px)] w-[150px] sm:left-[calc(50%-110px)] sm:w-[220px]'
+    : isTurkishPot
+      ? 'left-[calc(50%-75px)] w-[150px] sm:left-[calc(50%-110px)] sm:w-[220px]'
+      : 'left-[calc(50%-65px)] w-[130px] sm:left-[calc(50%-90px)] sm:w-[180px]';
+  const machineImageClass = isMokaPot
+    ? 'h-[175px] w-[150px] sm:h-[235px] sm:w-[220px]'
+    : isTurkishPot
+      ? 'h-[155px] w-[150px] sm:h-[205px] sm:w-[220px]'
+      : 'h-[175px] w-[130px] sm:h-[235px] sm:w-[180px]';
+
   return (
     <div
       className={`relative flex h-[280px] w-full items-center justify-center sm:h-[350px] lg:h-[500px] ${
@@ -28,7 +43,7 @@ export default function CoffeeAnimation({
     >
       {/* Machine and pour stream share the same anchor so coffee starts at the outlet. */}
       <motion.div
-        className={`absolute left-[calc(50%-55px)] top-2 z-20 w-[130px] sm:left-[calc(50%-100px)] sm:top-[40px] sm:w-[200px] ${
+        className={`absolute top-2 z-20 sm:top-[40px] ${machineFrameClass} ${
           reverse ? 'scale-x-[-1]' : ''
         }`}
         style={{
@@ -38,12 +53,14 @@ export default function CoffeeAnimation({
         }}
         transition={{ type: 'spring', stiffness: 90, damping: 22 }}
       >
-        <img
-          src={machineImage}
-          alt="Coffee machine"
-          className="h-[130px] w-[130px] -rotate-12 object-contain sm:h-[200px] sm:w-[200px]"
-          draggable={false}
-        />
+        <div className="flex w-full items-center justify-center">
+          <img
+            src={machineImage}
+            alt="Coffee machine"
+            className={`block max-w-full object-contain object-center ${machineImageClass}`}
+            draggable={false}
+          />
+        </div>
 
         {/* The stream is attached to the lower outlet area, not the center of the canvas. */}
         <motion.div
