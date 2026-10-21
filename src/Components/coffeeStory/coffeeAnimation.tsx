@@ -15,19 +15,19 @@ type MachineLayout = {
 
 const MACHINE_LAYOUTS: Record<'french' | 'turkish' | 'moka' | 'default', MachineLayout> = {
   french: {
-    frame: 'left-[calc(50%-70px)] w-[140px] sm:left-[calc(50%-95px)] sm:w-[190px]',
-    image: 'h-[230px] w-[125px] sm:h-[300px] sm:w-[165px]',
-    stream: 'left-[42%] top-[62%] sm:left-[43%] sm:top-[62%]',
+    frame: 'left-[calc(60%-20px)] w-[200px] sm:left-[calc(90%-95px)] sm:w-[240px]',
+    image: 'h-[200px] w-[200px] bottom-10 sm:bottom-0 sm:h-[300px] sm:w-[300px]',
+    stream: 'left-[16%] top-[8%] sm:left-[12%] sm:top-[35%]',
   },
   turkish: {
-    frame: 'left-[calc(50%-90px)] w-[180px] sm:left-[calc(50%-125px)] sm:w-[250px]',
-    image: 'h-[190px] w-[170px] sm:h-[250px] sm:w-[225px]',
-    stream: 'left-[46%] top-[56%] sm:left-[47%] sm:top-[56%]',
+    frame: 'left-[calc(60%-20px)] w-[200px] sm:left-[calc(90%-95px)] sm:w-[240px]',
+    image: 'h-[200px] w-[200px] bottom-10 sm:bottom-0 sm:h-[300px] sm:w-[300px]',
+    stream: 'left-[16%] top-[9%] sm:left-[12%] sm:top-[35%]',
   },
   moka: {
-    frame: 'left-[calc(50%-90px)] w-[180px] sm:left-[calc(50%-120px)] sm:w-[240px]',
-    image: 'h-[205px] w-[175px] sm:h-[270px] sm:w-[225px]',
-    stream: 'left-[50%] top-[57%] sm:left-[51%] sm:top-[57%]',
+    frame: 'left-[calc(60%-20px)] w-[180px] sm:left-[calc(90%-80px)] sm:w-[240px] ',
+    image: 'h-[180px] w-[1180px] sm:bottom-0 sm:h-[230px] sm:w-[230px] sm:top-10 top-[-30px]',
+    stream: 'left-[4%] top-[10%] sm:left-[8%] sm:top-[40%]',
   },
   default: {
     frame: 'left-[calc(50%-80px)] w-[160px] sm:left-[calc(50%-110px)] sm:w-[220px]',
