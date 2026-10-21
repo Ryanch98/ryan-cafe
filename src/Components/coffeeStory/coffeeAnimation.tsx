@@ -7,6 +7,48 @@ interface CoffeeAnimationProps {
   machineImage: string;
 }
 
+type MachineLayout = {
+  frame: string;
+  image: string;
+  stream: string;
+};
+
+const MACHINE_LAYOUTS: Record<'french' | 'turkish' | 'moka' | 'default', MachineLayout> = {
+  french: {
+    frame: 'left-[calc(60%-20px)] w-[200px] sm:left-[calc(90%-95px)] sm:w-[240px]',
+    image: 'h-[200px] w-[200px] bottom-10 sm:bottom-0 sm:h-[300px] sm:w-[300px]',
+    stream: 'left-[16%] top-[8%] sm:left-[12%] sm:top-[35%]',
+  },
+  turkish: {
+    frame: 'left-[calc(60%-20px)] w-[200px] sm:left-[calc(90%-95px)] sm:w-[240px]',
+    image: 'h-[200px] w-[200px] bottom-10 sm:bottom-0 sm:h-[300px] sm:w-[300px]',
+    stream: 'left-[16%] top-[9%] sm:left-[12%] sm:top-[35%]',
+  },
+  moka: {
+    frame: 'left-[calc(60%-20px)] w-[180px] sm:left-[calc(90%-80px)] sm:w-[240px] ',
+    image: 'h-[180px] w-[1180px] sm:bottom-0 sm:h-[230px] sm:w-[230px] sm:top-10 top-[-30px]',
+    stream: 'left-[4%] top-[10%] sm:left-[8%] sm:top-[40%]',
+  },
+  default: {
+    frame: 'left-[calc(50%-80px)] w-[160px] sm:left-[calc(50%-110px)] sm:w-[220px]',
+    image: 'h-[210px] w-[150px] sm:h-[270px] sm:w-[200px]',
+    stream: 'left-[45%] top-[58%] sm:left-[45%] sm:top-[58%]',
+  },
+};
+
+function getMachineLayout(imagePath: string): MachineLayout {
+  const source = imagePath.toLowerCase().split('/').pop() ?? '';
+
+  if (source.includes('french')) return MACHINE_LAYOUTS.french;
+  if (source.includes('turkish')) return MACHINE_LAYOUTS.turkish;
+  // Support both common spellings: moka pot and mocapot.
+  if (source.includes('moka') || source.includes('moca') || source.includes('espresso')) {
+    return MACHINE_LAYOUTS.moka;
+  }
+
+  return MACHINE_LAYOUTS.default;
+}
+
 export default function CoffeeAnimation({
   reverse,
   progress = 0,
@@ -14,10 +56,10 @@ export default function CoffeeAnimation({
 }: CoffeeAnimationProps) {
   const gradientId = `espresso-stream-${useId().replace(/:/g, '')}`;
   const amount = Math.min(1, Math.max(0, progress));
-  // Leave a short intro and outro so the pour feels intentional.
   const pourProgress = Math.min(1, Math.max(0, (amount - 0.12) / 0.68));
   const streamOpacity = amount > 0.12 && amount < 0.86 ? 1 : 0;
   const coffeeLevel = Math.min(1, Math.max(0, (amount - 0.35) / 0.58));
+  const machineLayout = getMachineLayout(machineImage);
 
   return (
     <div
@@ -26,9 +68,8 @@ export default function CoffeeAnimation({
       }`}
       aria-label="Coffee pouring into a cup"
     >
-      {/* Machine and pour stream share the same anchor so coffee starts at the outlet. */}
       <motion.div
-        className={`absolute left-[35%] top-2 z-20 w-[130px] sm:left-[calc(70%-100px)] sm:top-[120px] sm:w-[200px] ${
+        className={`absolute top-2 z-20 sm:top-[70px] ${machineLayout.frame} ${
           reverse ? 'scale-x-[-1]' : ''
         }`}
         style={{
@@ -40,20 +81,16 @@ export default function CoffeeAnimation({
       >
         <img
           src={machineImage}
-          alt="Coffee machine"
-          className={
-            'ml-10 mt-0 -rotate-12 scale-125 sm:ml-20 sm:mt-4 sm:max-h-[180px] sm:w-[200px]'
-          }
+          alt="Coffee brewing device"
+          className={`relative z-20 mx-auto block max-w-full object-contain object-center ${machineLayout.image}`}
           draggable={false}
         />
 
-        {/* The stream is attached to the lower outlet area, not the center of the canvas. */}
         <motion.div
-          className="absolute left-[25%] top-[35%] z-10 origin-top-left sm:left-[40%] sm:top-[35%]"
+          className={`absolute z-10 origin-top-left ${machineLayout.stream}`}
           style={{
             opacity: streamOpacity,
             scaleY: pourProgress,
-            // Counter the machine tilt so the espresso falls vertically.
             rotate: 40 * amount,
           }}
         >
@@ -89,7 +126,6 @@ export default function CoffeeAnimation({
         </motion.div>
       </motion.div>
 
-      {/* Cup and rising espresso surface */}
       <motion.div
         className="absolute left-[calc(50%-50px)] top-[185px] sm:left-[calc(50%-100px)] sm:top-[1/2]"
         animate={{
@@ -106,7 +142,6 @@ export default function CoffeeAnimation({
             draggable={false}
           />
 
-          {/* Keep the liquid clipped to the visible opening of the cup. */}
           <motion.div
             className="absolute left-[49px] top-[46px] z-20 h-[12px] w-[82px] overflow-hidden rounded-[50%] bg-[#4b2412] sm:left-[27%] sm:top-[60px] sm:h-[20px] sm:w-[115px]"
             style={{
@@ -125,7 +160,6 @@ export default function CoffeeAnimation({
           </motion.div>
         </div>
 
-        {/* Subtle steam appears once the pour is nearly complete. */}
         {amount > 0.88 && (
           <motion.svg
             className="absolute -top-52 left-0 sm:-top-[50px] sm:left-[54px]"
